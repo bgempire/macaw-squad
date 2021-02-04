@@ -63,6 +63,10 @@ def setProps(cont):
 			own["MoveV"] += MOVE_ACCEL
 		if own["MoveV"] > 0:
 			own["MoveV"] -= MOVE_ACCEL
+			
+	# Avoid sliding
+	own["MoveV"] = round(own["MoveV"], 3)
+	own["MoveH"] = round(own["MoveH"], 3)
 
 def processTrack(cont):
 	own = cont.owner
