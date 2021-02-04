@@ -1,0 +1,45 @@
+# Available game resolutions to set from options menu.
+
+# - Resolution reference:
+# 	* ResolutionName : dict = Dictionary containing resolution details. The
+# 		resolution name is shown in options menu and is saved along with game 
+# 		options as the resolution ID.
+	
+# - Resolution details reference:
+# 	* Width : int = Window width of resolution.
+# 	* Height : int = Window height of resolution.
+# 	* Aspect : str = Aspect ratio of resolution. May be used to filter game
+# 		resolutions to a single aspect ratio.
+
+{
+	"640x480" : {
+		"Width" : 640,
+		"Height" : 480,
+		"Aspect" : "4:3"
+	},
+	"800x600" : {
+		"Width" : 800,
+		"Height" : 600,
+		"Aspect" : "4:3"
+	},
+	"1024x768" : {
+		"Width" : 1024,
+		"Height" : 768,
+		"Aspect" : "4:3"
+	},
+	"960x540" : {
+		"Width" : 960,
+		"Height" : 540,
+		"Aspect" : "16:9"
+	},
+	"1280x720" : {
+		"Width" : 1280,
+		"Height" : 720,
+		"Aspect" : "16:9"
+	},
+	"1920x1080" : {
+		"Width" : 1920,
+		"Height" : 1080,
+		"Aspect" : "16:9"
+	}
+}

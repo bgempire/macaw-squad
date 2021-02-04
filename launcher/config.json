@@ -1,0 +1,12 @@
+{
+    "GameName" : "Macaw Squad",
+    "Version" : "0.0.1",
+    "MainFile" : "Macaw Squad.blend",
+    "DataFile" : "./data.dat",
+    "DataSource" : "./data",
+    "DataChunkSize" : 32,
+    "Persistent" : [
+        "*.bgeconf",
+        "*.sav",
+    ]
+}

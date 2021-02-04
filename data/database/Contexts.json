@@ -1,0 +1,48 @@
+# Game contexts consist in group of scenes that compose a specific game state
+# (for example, 'MainMenu' context may consist in 'GUI' scene, 'Background' scene
+# and 'Manager' scene).
+
+# - Context reference:
+# 	* ContextName : list = Name used when changing contexts in game. It stores
+# 		a list of dicts containing each context scene and its options.
+
+# - Scene reference:
+# 	* Scene : str = Scene name.
+# 	* Priority : int = Priority of insertion of scene. Higher values makes scenes
+# 		overlay other scenes with lower values.
+# 	* Pausable : bool = If scene is paused when game pause is requested.
+# 	* Restart : bool = If scene is restarted when set/restart context is requested.
+
+{
+	"SplashScreen" : {
+		"Default" : True,
+		"Scenes" : [
+			{
+				"Name" : "ScnSplashScreen",
+				"Pausable" : False,
+				"Restart" : False
+			}
+		]
+	},
+	
+	"MainMenu" : {
+		"Loading" : "ScnLoading",
+		"Scenes" : [
+			{
+				"Name" : "ScnMouseCursor",
+				"Pausable" : False,
+				"Restart" : False
+			},
+			{
+				"Name" : "ScnMainMenuGui",
+				"Pausable" : False,
+				"Restart" : False
+			},
+			{
+				"Name" : "ScnMainMenuBack",
+				"Pausable" : False,
+				"Restart" : False
+			},
+		]
+	}
+}

@@ -1,0 +1,15 @@
+# General GUI setup of colors, sizes and transition speeds
+
+{    
+    "MouseCursor" : {
+        "FadeFactor" : 0.05,
+        "IdleFadeTime" : 2.0,
+        "SizeNormal" : 1.0,
+        "SizeClick" : 0.9,
+    },
+    "Widget" : {
+        "ColorNormal" : (1, 1, 1, 0.5),
+        "ColorHover" : (1, 1, 1, 0.8),
+        "ColorClick" : (1, 1, 1, 1),
+    }
+}

@@ -1,0 +1,9 @@
+{
+    # Common lines
+    "Yes" : "Sim",
+    "No" : "Não",
+    "Confirm" : "Confirmar",
+    "Cancel" : "Cancelar",
+    "LoadingShort" : "Carregando...",
+    "LoadingLong" : "Aguarde, carregando...",
+}

@@ -1,0 +1,17 @@
+{
+    "GameTitle" : "Macaw Squad",
+    
+    # Common lines
+    "Yes" : "Yes",
+    "No" : "No",
+    "Confirm" : "Confirm",
+    "Cancel" : "Cancel",
+    "LoadingShort" : "Loading...",
+    "LoadingLong" : "Please wait, loading...",
+    
+    # Main menu
+    "PlayGame" : "Play",
+    "Options" : "Options",
+    "Credits" : "Credits",
+    "QuitGame" : "Quit",
+}
