@@ -6,3 +6,5 @@ __pycache__/
 # Other
 .vscode
 DELETE-ME
+*.blend1
+*.blend2
