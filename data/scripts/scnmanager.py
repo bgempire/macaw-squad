@@ -44,9 +44,9 @@ class Manager(bge.types.KX_GameObject):
 					self.contextChangeStep = "Waiting"
 					if bgf.debug: print("> Added loading scene:", bgf.database["Contexts"][context]["Loading"])
 				else:
-					self.contextChangeStep = "LoadContext"
+					self.contextChangeStep = "RemoveScenes"
 		
-		elif self.contextChangeStep == "LoadContext":
+		elif self.contextChangeStep == "RemoveScenes":
 			if bgf.debug: print("> Removing all scenes from current context...")
 			self.currentScenes = bgf.getSceneDict(exclude=["Manager"])
 			
@@ -55,7 +55,9 @@ class Manager(bge.types.KX_GameObject):
 					bgf.freeSceneLibs(self.currentScenes[scn])
 					self.currentScenes[scn].end()
 					if bgf.debug: print("  > Removed scene:", scn)
+			self.contextChangeStep = "AddScenes"
 				
+		elif self.contextChangeStep == "AddScenes":
 			if bgf.debug: print("> Adding all scenes from context:", bgf.currentContext)
 			for scn in bgf.database["Contexts"][bgf.currentContext]["Scenes"]:
 				bge.logic.addScene(scn["Name"], False)
@@ -77,6 +79,6 @@ class Manager(bge.types.KX_GameObject):
 					if subject == "SetContext":
 						self.setContext(self.message.bodies[0])
 					if subject == "_LoadContext":
-						self.contextChangeStep = "LoadContext"
+						self.contextChangeStep = "RemoveScenes"
 					if subject == "_FinishLoading":
 						self.contextChangeStep = "FinishLoading"

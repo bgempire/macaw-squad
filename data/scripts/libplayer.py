@@ -7,6 +7,7 @@ TRACK_TIME = 15
 LANDING_DISTANCE = 7
 MOVE_ACCEL = 0.025
 MOVE_SPEED = 0.25
+CAMERA_SMOOTH = 80
 
 def setProps(cont):
 	own = cont.owner
@@ -128,6 +129,15 @@ def processMovement(cont):
 	own.worldPosition.y = 0
 	own.applyMovement(moveVector, False)
 
+def processCamera(cont):
+	own = cont.owner
+	axis = own.childrenRecursive["CameraAxis"]
+	own.scene.active_camera.timeOffset = CAMERA_SMOOTH
+	if own["Landing"]:
+		axis.worldPosition = own.worldPosition + Vector((0, 0, 5))
+	else:
+		axis.worldPosition = own.worldPosition + Vector((0, 0, -5))
+
 def runPlayer(cont):
 	always = cont.sensors["Always"]
 	
@@ -135,3 +145,4 @@ def runPlayer(cont):
 		setProps(cont)
 		processTrack(cont)
 		processMovement(cont)
+		processCamera(cont)

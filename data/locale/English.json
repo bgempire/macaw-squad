@@ -17,4 +17,9 @@
     
     # Options
     "Vsync" : "VSync",
+    
+    # Game
+    "HudAllies" : "Allies: ",
+    "HudHostages" : "Hostages: ",
+    "HudKills" : "Kills: ",
 }
