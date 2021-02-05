@@ -8,6 +8,8 @@ LANDING_DISTANCE = 7
 MOVE_ACCEL = 0.025
 MOVE_SPEED = 0.25
 CAMERA_SMOOTH = 80
+VIEW_AHEAD_DISTANCE = 6
+VIEW_HEIGHT_DISTANCE = 5
 
 def setProps(cont):
 	own = cont.owner
@@ -133,10 +135,19 @@ def processCamera(cont):
 	own = cont.owner
 	axis = own.childrenRecursive["CameraAxis"]
 	own.scene.active_camera.timeOffset = CAMERA_SMOOTH
+	posVector = Vector((0, 0, 0))
+	
 	if own["Landing"]:
-		axis.worldPosition = own.worldPosition + Vector((0, 0, 5))
+		posVector.z = VIEW_HEIGHT_DISTANCE
 	else:
-		axis.worldPosition = own.worldPosition + Vector((0, 0, -5))
+		posVector.z = -VIEW_HEIGHT_DISTANCE
+		
+		if own["DirectionH"] == "Left":
+			posVector.x = -VIEW_AHEAD_DISTANCE
+		elif own["DirectionH"] == "Right":
+			posVector.x = VIEW_AHEAD_DISTANCE
+		
+	axis.worldPosition = own.worldPosition + posVector
 
 def runPlayer(cont):
 	always = cont.sensors["Always"]
