@@ -40,6 +40,71 @@ COLORS = {
     "BLACK" : (0, 0, 0, 1)
 }
 
+### Main Functions ###
+def main():
+    cont = bge.logic.getCurrentController()
+    own = cont.owner
+    always = cont.sensors["Always"]
+    message = cont.sensors["Message"]
+    
+    startTime = time()
+    
+    # End object if not a group instance
+    if own.groupObject is None:
+        own.endObject()
+        return
+        
+    if always.positive and always.status == 1 or message.positive or own["Update"] >= 0:
+        
+        if "Disabled" in own.groupObject:
+            if own.groupObject["Disabled"]:
+                return
+        
+        if DBG: print("> Running text object", own.groupObject)
+        
+        if not "Chars" in own:
+            own["Chars"] = []
+        
+        # Parent manager to group instance if not already
+        if own.parent != own.groupObject:
+            own.setParent(own.groupObject)
+            
+        # Get and set properties from group to owner
+        getPropsFromGroup(cont)
+            
+        # Creates the mesh library for all characters of current style
+        # Create char lib dict in scene to store char meshes
+        if not "CharLib" in own.scene:
+            print("Create char libs")
+            own.scene["CharLib"] = {}
+            createCharLibInScene(cont)
+            
+        # Exit function if not all chars from table were created as libs
+        if own["Style"] in own.scene["CharLib"].keys():
+            if len(own.scene["CharLib"][own["Style"]].keys()) != len(CHARS_TABLE.keys()):
+                return
+        else:
+            return
+            
+        if message.positive:
+            bodies = [b for b in message.bodies]
+            
+            if own["Id"] in bodies or "All" in bodies:
+                updateText(cont)
+                own["LastText"] = own["Text"]
+        
+        else:
+            if own["Update"] >= 0:
+                updateText(cont)
+                own["LastText"] = own["Text"]
+            
+            elif len(own["Text"]) > 0 and own["Text"] != own["LastText"]:
+                updateText(cont)
+                own["LastText"] = own["Text"]
+            
+        if DBG:
+            print("  > Ran", own.groupObject, ", time taken:", round(time() - startTime, 4), "seconds")
+
 def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
 
@@ -269,72 +334,3 @@ def updateText(cont):
     own["LastStyle"] = own["Style"]
         
     if DBG: print("  > Text updated:", own.groupObject)
-        
-### Main Functions ###
-def main():
-    cont = bge.logic.getCurrentController()
-    own = cont.owner
-    always = cont.sensors["Always"]
-    message = cont.sensors["Message"]
-    
-    startTime = time()
-    
-    # End object if not a group instance
-    if own.groupObject is None:
-        own.endObject()
-        return
-        
-    if always.positive and always.status == 1 or message.positive or own["Update"] >= 0:
-        
-        if "Disabled" in own.groupObject:
-            if own.groupObject["Disabled"]:
-                return
-        
-        if DBG: print("> Running text object", own.groupObject)
-        
-        if not "Chars" in own:
-            own["Chars"] = []
-        
-        # Parent manager to group instance if not already
-        if own.parent != own.groupObject:
-            own.setParent(own.groupObject)
-            
-        # Get and set properties from group to owner
-        getPropsFromGroup(cont)
-            
-        # Creates the mesh library for all characters of current style
-        # Create char lib dict in scene to store char meshes
-        if not "CharLib" in own.scene:
-            print("Create char libs")
-            own.scene["CharLib"] = {}
-            createCharLibInScene(cont)
-            
-        # Exit function if not all chars from table were created as libs
-        if own["Style"] in own.scene["CharLib"].keys():
-            if len(own.scene["CharLib"][own["Style"]].keys()) != len(CHARS_TABLE.keys()):
-                return
-        else:
-            return
-            
-        if message.positive:
-            bodies = [b for b in message.bodies]
-            
-            if own["Id"] in bodies or "All" in bodies:
-                updateText(cont)
-                own["LastText"] = own["Text"]
-        
-        else:
-            if own["Update"] >= 0:
-                updateText(cont)
-                own["LastText"] = own["Text"]
-            
-            elif len(own["Text"]) > 0 and own["Text"] != own["LastText"]:
-                updateText(cont)
-                own["LastText"] = own["Text"]
-            
-        if DBG:
-            print("  > Ran", own.groupObject, ", time taken:", round(time() - startTime, 4), "seconds")
-  
-# Uncomment below when running on controller in Script mode
-# or call the main function on the controller if running Module mode
-main()

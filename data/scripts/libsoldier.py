@@ -25,7 +25,6 @@ def runEnemy(cont):
 	processTrack(cont)
 
 def runAlly(cont):
-	own = cont.owner
 	always = cont.sensors["Always"]
 	
 	if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:

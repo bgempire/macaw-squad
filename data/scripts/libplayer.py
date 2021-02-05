@@ -11,6 +11,15 @@ CAMERA_SMOOTH = 80
 VIEW_AHEAD_DISTANCE = 6
 VIEW_HEIGHT_DISTANCE = 5
 
+def runPlayer(cont):
+	always = cont.sensors["Always"]
+	
+	if always.positive:
+		setProps(cont)
+		processTrack(cont)
+		processMovement(cont)
+		processCamera(cont)
+
 def setProps(cont):
 	own = cont.owner
 	
@@ -148,12 +157,3 @@ def processCamera(cont):
 			posVector.x = VIEW_AHEAD_DISTANCE
 		
 	axis.worldPosition = own.worldPosition + posVector
-
-def runPlayer(cont):
-	always = cont.sensors["Always"]
-	
-	if always.positive:
-		setProps(cont)
-		processTrack(cont)
-		processMovement(cont)
-		processCamera(cont)

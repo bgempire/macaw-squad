@@ -2,10 +2,6 @@ import bge
 
 from scripts import bgf
 
-def fadeObjects(objList, fadeValue):
-	for obj in objList:
-		obj.color[3] += fadeValue
-
 def runLoading(cont):
 	own = cont.owner
 	always = cont.sensors["Always"]
@@ -40,3 +36,7 @@ def runLoading(cont):
 			
 		else:
 			own["Fade"] = True
+
+def fadeObjects(objList, fadeValue):
+	for obj in objList:
+		obj.color[3] += fadeValue

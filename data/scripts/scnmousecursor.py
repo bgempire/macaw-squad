@@ -6,6 +6,20 @@ from scripts import bgf
 from bge.logic import globalDict
 
 from scripts import bgf
+
+def runMouseCursor(cont):
+	own = cont.owner
+	always = cont.sensors["Always"]
+	
+	if always.positive:
+		if always.status == 1:
+			own["Style"] = bgf.database["Gui"]["MouseCursor"]
+			own["Clicking"] = False
+			
+		else:
+			processCursorAppearence(cont)
+			processCursorFade(cont)
+			processMouseClick(cont)
 	
 def processCursorFade(cont):
 	own = cont.owner
@@ -72,17 +86,3 @@ def processCursorAppearence(cont):
 					own.color = bgf.database["Gui"]["MouseCursor"]["AimColorAlly"]
 				elif globalDict["TargetType"] == "Enemy":
 					own.color = bgf.database["Gui"]["MouseCursor"]["AimColorEnemy"]
-
-def runMouseCursor(cont):
-	own = cont.owner
-	always = cont.sensors["Always"]
-	
-	if always.positive:
-		if always.status == 1:
-			own["Style"] = bgf.database["Gui"]["MouseCursor"]
-			own["Clicking"] = False
-			
-		else:
-			processCursorAppearence(cont)
-			processCursorFade(cont)
-			processMouseClick(cont)
