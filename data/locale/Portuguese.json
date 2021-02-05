@@ -1,4 +1,6 @@
 {
+    "GameTitle" : "Macaw Squad",
+    
     # Common lines
     "Yes" : "Sim",
     "No" : "Não",
@@ -6,4 +8,13 @@
     "Cancel" : "Cancelar",
     "LoadingShort" : "Carregando...",
     "LoadingLong" : "Aguarde, carregando...",
+    
+    # Main menu
+    "PlayGame" : "Jogar",
+    "Options" : "Opções",
+    "Credits" : "Créditos",
+    "QuitGame" : "Sair",
+    
+    # Options
+    "Vsync" : "VSync",
 }

@@ -14,4 +14,7 @@
     "Options" : "Options",
     "Credits" : "Credits",
     "QuitGame" : "Quit",
+    
+    # Options
+    "Vsync" : "VSync",
 }
