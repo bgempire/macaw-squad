@@ -2,6 +2,7 @@ import bge
 
 from scripts import bgf
 from mathutils import Vector
+from bge.logic import globalDict
 
 TRACK_TIME = 15
 LANDING_DISTANCE = 7
@@ -22,6 +23,20 @@ def runPlayer(cont):
 
 def setProps(cont):
 	own = cont.owner
+	mouseOver = cont.sensors["MouseOver"]
+	
+	if mouseOver.positive:
+		if "Enemy" in mouseOver.hitObject:
+			if mouseOver.hitObject["Enemy"]:
+				globalDict["TargetType"] = "Enemy"
+			elif not mouseOver.hitObject["Enemy"]:
+				globalDict["TargetType"] = "Ally"
+		elif "Hostage" in mouseOver.hitObject:
+			globalDict["TargetType"] = "Ally"
+		else:
+			globalDict["TargetType"] = "None"
+	else:
+		globalDict["TargetType"] = "None"
 	
 	# Key status
 	keyLeft = bgf.getInputStatus("KeyLeft", 2)
@@ -147,6 +162,7 @@ def processCamera(cont):
 	posVector = Vector((0, 0, 0))
 	
 	if own["Landing"]:
+		posVector.y = VIEW_HEIGHT_DISTANCE * 3
 		posVector.z = VIEW_HEIGHT_DISTANCE
 	else:
 		posVector.z = -VIEW_HEIGHT_DISTANCE

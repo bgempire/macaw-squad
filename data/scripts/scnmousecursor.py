@@ -66,6 +66,7 @@ def processMouseClick(cont):
 
 def processCursorAppearence(cont):
 	own = cont.owner
+	mouseOver = cont.sensors["MouseOver"]
 	
 	if "Game" in bgf.currentContext:
 				

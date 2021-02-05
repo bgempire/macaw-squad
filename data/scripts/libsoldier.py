@@ -54,6 +54,9 @@ def runSoldier(cont):
 	
 	if always.positive:
 		
+		if "Enemy" in cont.owner.groupObject:
+			cont.owner["Enemy"] = cont.owner.groupObject["Enemy"]
+		
 		if cont.owner["Enemy"]:
 			runEnemy(cont)
 			
