@@ -24,6 +24,8 @@ class BGForce:
         self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=True)
         self.config = self.loadFromFile(expandPath("//" + self.FILE_CONFIG_NAME + self.FILE_DATA_EXT), verbose=True)
         self.inputEvents = self.getInputEvents()
+        self.currentContext = ""
+        self.gameData.update(self.database["Game"])
     
     def loadFromFile(self, path, verbose=False, msgPrefix=""):
         path = Path(path)

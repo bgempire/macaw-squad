@@ -6,6 +6,10 @@
         "IdleFadeTime" : 2.0,
         "SizeNormal" : 1.0,
         "SizeClick" : 0.9,
+        "CursorColorNormal" : (1, 1, 1, 1),
+        "AimColorNormal" : (1, 1, 0, 1),
+        "AimColorAlly" : (0, 1, 0, 1),
+        "AimColorEnemy" : (1, 0, 0, 1),
     },
     "Widget" : {
         "ColorNormal" : (1, 1, 1, 0.5),

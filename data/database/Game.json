@@ -1,0 +1,9 @@
+# Default game state (globalDict)
+
+{
+    "Paused" : False,
+    "SoldiersAlive" : 5,
+    "HostagesSaved" : 0,
+    "EnemiesKilled" : 0,
+    "TargetType" : "None",
+}

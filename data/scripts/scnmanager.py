@@ -23,7 +23,6 @@ class Manager(bge.types.KX_GameObject):
 		self.message = cont.sensors["Message"]
 		
 		self.contextChangeStep = "Done"
-		self.currentContext = ""
 		self.currentScenes = bgf.getSceneDict(exclude=["Manager"])
 		
 		for ctx in bgf.database["Contexts"].keys():
@@ -36,9 +35,9 @@ class Manager(bge.types.KX_GameObject):
 			self.setContext()
 		
 	def setContext(self, context=None):
-		if context is not None and self.currentContext != context and context in bgf.database["Contexts"].keys():
+		if context is not None and bgf.currentContext != context and context in bgf.database["Contexts"].keys():
 			if self.contextChangeStep == "Done":
-				self.currentContext = context
+				bgf.currentContext = context
 					
 				if "Loading" in bgf.database["Contexts"][context].keys():
 					bge.logic.addScene(bgf.database["Contexts"][context]["Loading"], True)
@@ -57,12 +56,12 @@ class Manager(bge.types.KX_GameObject):
 					self.currentScenes[scn].end()
 					if bgf.debug: print("  > Removed scene:", scn)
 				
-			if bgf.debug: print("> Adding all scenes from context:", self.currentContext)
-			for scn in bgf.database["Contexts"][self.currentContext]["Scenes"]:
+			if bgf.debug: print("> Adding all scenes from context:", bgf.currentContext)
+			for scn in bgf.database["Contexts"][bgf.currentContext]["Scenes"]:
 				bge.logic.addScene(scn["Name"], False)
 				if bgf.debug: print("  > Added scene:", scn["Name"])
 			self.currentScenes = bgf.getSceneDict(exclude=["Manager"])
-			if "Loading" in bgf.database["Contexts"][self.currentContext].keys():
+			if "Loading" in bgf.database["Contexts"][bgf.currentContext].keys():
 				self.contextChangeStep = "FinishLoading"
 			else:
 				self.contextChangeStep = "Done"

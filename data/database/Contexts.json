@@ -44,5 +44,26 @@
 				"Restart" : False
 			},
 		]
-	}
+	},
+	
+	"Game" : {
+		"Loading" : "ScnLoading",
+		"Scenes" : [
+			{
+				"Name" : "ScnMouseCursor",
+				"Pausable" : False,
+				"Restart" : False
+			},
+			{
+				"Name" : "ScnHud",
+				"Pausable" : False,
+				"Restart" : False
+			},
+			{
+				"Name" : "ScnGame",
+				"Pausable" : True,
+				"Restart" : True
+			}
+		]
+	},
 }
