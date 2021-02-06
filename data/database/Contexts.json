@@ -63,6 +63,11 @@
 				"Name" : "ScnGame",
 				"Pausable" : True,
 				"Restart" : True
+			},
+			{
+				"Name" : "ScnBackground",
+				"Pausable" : True,
+				"Restart" : True
 			}
 		]
 	},
