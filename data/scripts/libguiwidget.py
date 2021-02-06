@@ -71,7 +71,7 @@ def widget(cont):
 		own.color = bgf.database["Gui"]["Widget"]["ColorNormal"]
 	
 	# Mouse clicking
-	if mouseOver.positive and lmb.positive:
+	if mouseOver.positive and lmb.positive and lmb.status == 1:
 		own.color = bgf.database["Gui"]["Widget"]["ColorClick"]
 		
 		if "Button" in own:
@@ -79,6 +79,7 @@ def widget(cont):
 		
 		if "Checkbox" in own:
 			checkbox(cont, False)
+			button(cont)
 		
 def button(cont):
 	
@@ -110,7 +111,13 @@ def button(cont):
 					print("Could not exec command:", command)
 		
 		else:
-			own.sendMessage(group["Command"])
+			msg = group["Command"].split(" | ")
+			if len(msg) == 1:
+				own.sendMessage(msg[0])
+			elif len(msg) == 2:
+				own.sendMessage(msg[0], msg[1])
+			else:
+				own.sendMessage(group["Command"])
 			print("Message sent:", group["Command"])
 		
 def checkbox(cont, init):

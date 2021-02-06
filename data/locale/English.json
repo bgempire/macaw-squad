@@ -6,17 +6,35 @@
     "No" : "No",
     "Confirm" : "Confirm",
     "Cancel" : "Cancel",
+    "Back" : "Back",
     "LoadingShort" : "Loading...",
     "LoadingLong" : "Please wait, loading...",
     
     # Main menu
     "PlayGame" : "Play",
     "Options" : "Options",
-    "Credits" : "Credits",
+    "About" : "About",
     "QuitGame" : "Quit",
     
-    # Options
-    "Vsync" : "VSync",
+    # Options menu
+    "OptionsVideo" : "Video:",
+    "OptionsVsync" : "VSync",
+    "OptionsFullscreen" : "Fullscreen",
+    "OptionsResolution" : "Resolution:",
+    "OptionsResolutionNative" : "Native",
+    "OptionsSound" : "Sound:",
+    "OptionsSfx" : "Effects",
+    "OptionsBgm" : "Music",
+    "OptionsLanguage" : "Language:",
+    "OptionsEnglish" : "English",
+    "OptionsPortuguese" : "Português",
+    
+    # About menu
+    "AboutAuthors" : "Credits: Diego Almeida (modeling and texturing), Luciano 'Capuco' (animations), Joel Gomes (programming and sound).",
+    "AboutText" : "This game was created in one week for the game jam BGMC 34, on the Blender Artists Forum.",
+    
+    # Quit menu
+    "QuitConfirm" : "Are you sure you want to quit?",
     
     # Game
     "HudAllies" : "Allies: ",

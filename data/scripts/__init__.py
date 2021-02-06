@@ -5,9 +5,11 @@ import base64
 from pathlib import Path
 from bge.logic import expandPath
 from ast import literal_eval
-from pprint import pprint
+from pprint import pprint, pformat
 
 __all__ = ["BGForce", "bgf"]
+
+# bge.logic.setExitKey(bge.events.F12KEY)
 
 class BGForce:
     FILE_DATA_EXT = ".json"
@@ -26,11 +28,13 @@ class BGForce:
         self.inputEvents = self.getInputEvents()
         self.currentContext = ""
         self.gameData.update(self.database["Game"])
+        
+        self.updateVideo()
     
     def loadFromFile(self, path, verbose=False, msgPrefix=""):
         path = Path(path)
         try:
-            with open(path.as_posix(), "r") as openedFile:
+            with open(path.as_posix(), "r", encoding="UTF-8") as openedFile:
                 data = openedFile.read()
                 if path.suffix == self.FILE_DATA_EXT:
                     data = literal_eval(data)
@@ -89,6 +93,30 @@ class BGForce:
         with open(targetPath.as_posix(), "wb") as openedFile:
             openedFile.write(data)
             if verbose: print("> Saved file to:", targetPath.as_posix())
+            
+    def saveConfig(self):
+        path = expandPath("//" + self.FILE_CONFIG_NAME + self.FILE_DATA_EXT)
+        with open(path, "w") as openedFile:
+            openedFile.write(pformat(self.config))
+            print("> Config saved to:", path)
+            
+    def updateVideo(self):
+        resolution = None
+        if self.config["VideoResolution"][0].isdigit():
+            resolution = self.config["VideoResolution"].lower().split("x")
+            try:
+                resolution = list(map(literal_eval, resolution))
+            except:
+                pass
+            if len(resolution) == 2 and type(resolution[0]) == int:
+                bge.render.setWindowSize(resolution[0], resolution[1])
+        elif self.config["VideoResolution"] == "Native":
+            resolution = bge.render.getDisplayDimensions()
+            bge.render.setWindowSize(resolution[0], resolution[1])
+        if resolution is not None:
+            print("> Resolution set to", resolution)
+        bge.render.setVsync(self.config["VideoVsync"])
+        bge.render.setFullScreen(self.config["VideoFullscreen"])
             
     def getSceneDict(self, exclude=[]):
         data = {}

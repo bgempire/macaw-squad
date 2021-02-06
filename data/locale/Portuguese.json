@@ -6,15 +6,38 @@
     "No" : "Não",
     "Confirm" : "Confirmar",
     "Cancel" : "Cancelar",
+    "Back" : "Voltar",
     "LoadingShort" : "Carregando...",
     "LoadingLong" : "Aguarde, carregando...",
     
     # Main menu
     "PlayGame" : "Jogar",
     "Options" : "Opções",
-    "Credits" : "Créditos",
+    "About" : "Sobre",
     "QuitGame" : "Sair",
     
-    # Options
-    "Vsync" : "VSync",
+    # Options menu
+    "OptionsVideo" : "Vídeo:",
+    "OptionsVsync" : "VSync",
+    "OptionsFullscreen" : "Tela Cheia",
+    "OptionsResolution" : "Resolução:",
+    "OptionsResolutionNative" : "Nativa",
+    "OptionsSound" : "Som:",
+    "OptionsSfx" : "Efeitos",
+    "OptionsBgm" : "Música",
+    "OptionsLanguage" : "Língua:",
+    "OptionsEnglish" : "English",
+    "OptionsPortuguese" : "Português",
+    
+    # About menu
+    "AboutAuthors" : "Créditos: Diego Almeida (modelagem e texturização), Luciano 'Capuco' (animações), Joel Gomes (programação e som).",
+    "AboutText" : "Este jogo foi criado em uma semana para a game jam BGMC 34, no Fórum Blender Artists.",
+    
+    # Quit menu
+    "QuitConfirm" : "Tem certeza de que quer sair?",
+    
+    # Game
+    "HudAllies" : "Aliados: ",
+    "HudHostages" : "Reféns: ",
+    "HudKills" : "Baixas: ",
 }

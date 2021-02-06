@@ -17,6 +17,7 @@ def initManager(cont):
 	own = cont.owner
 	own["ContextChangeStep"] = "Done"
 	own["CurrentScenes"] = bgf.getSceneDict(exclude=["Manager"])
+	bgf.updateVideo()
 	
 	for ctx in bgf.database["Contexts"].keys():
 		if "Default" in bgf.database["Contexts"][ctx].keys():
@@ -31,10 +32,16 @@ def processMessages(cont):
 			if len(message.bodies) > 0:
 				if subject == "SetContext":
 					setContext(cont, message.bodies[0])
-				if subject == "_LoadContext":
-					own["ContextChangeStep"] = "RemoveScenes"
-				if subject == "_FinishLoading":
-					own["ContextChangeStep"] = "FinishLoading"
+			if subject == "_LoadContext":
+				own["ContextChangeStep"] = "RemoveScenes"
+			if subject == "_FinishLoading":
+				own["ContextChangeStep"] = "FinishLoading"
+			if subject == "SaveConfig":
+				bgf.saveConfig()
+			if subject == "SaveConfig":
+				bgf.saveConfig()
+			if subject == "UpdateVideo":
+				bgf.updateVideo()
 
 def setContext(cont, context=None):
 	own = cont.owner

@@ -15,7 +15,6 @@
 
 {
 	"SplashScreen" : {
-		"Default" : True,
 		"Scenes" : [
 			{
 				"Name" : "ScnSplashScreen",
@@ -26,6 +25,7 @@
 	},
 	
 	"MainMenu" : {
+		"Default" : True,
 		"Loading" : "ScnLoading",
 		"Scenes" : [
 			{
