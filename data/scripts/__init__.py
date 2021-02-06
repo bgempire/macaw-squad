@@ -1,6 +1,7 @@
 import bge
 import zlib
 import base64
+import aud
 
 from pathlib import Path
 from bge.logic import expandPath
@@ -16,6 +17,7 @@ class BGForce:
     FILE_DATA_EXT_HIDDEN = ".dat"
     FILE_CONFIG_NAME = "Config.cfg"
     FOLDER_DB_NAME = "database"
+    FOLDER_SOUNDS_NAME = "sounds"
     FOLDER_LC_NAME = "locale"
     
     def __init__(self, debug=False):
@@ -37,6 +39,14 @@ class BGForce:
         self.inputEvents = self.getInputEvents()
         self.currentContext = ""
         self.gameData.update(self.database["Game"])
+        
+        self.soundBuffered = {}
+        self.soundFiles = {}
+        soundsPath = Path(expandPath("//" + self.FOLDER_SOUNDS_NAME))
+        if soundsPath.exists():
+            for _file in soundsPath.iterdir():
+                if _file.suffix.lower() in (".wav", ".mp3", ".ogg"):
+                    self.soundFiles[_file.stem] = _file
         
         self.updateVideo()
     
@@ -126,7 +136,38 @@ class BGForce:
             print("> Resolution set to", resolution)
         bge.render.setVsync(self.config["VideoVsync"])
         bge.render.setFullScreen(self.config["VideoFullscreen"])
+    
+    def playSound(self, sound, buffer=False, is3D=False, refObj=None, distMax=10):
+        if sound in self.soundFiles.keys():
+            device = aud.device()
             
+            if is3D and refObj is not None:
+                device.distance_model = aud.AUD_DISTANCE_MODEL_LINEAR
+                device.listener_location = refObj.scene.active_camera.worldPosition
+                device.listener_orientation = refObj.scene.active_camera.worldOrientation.to_quaternion()
+                
+            factory = None
+            if not sound in self.soundBuffered.keys():
+                factory = aud.Factory(self.soundFiles[sound].as_posix())
+                
+                if buffer:
+                    factory = aud.Factory.buffer(factory)
+                    self.soundBuffered[sound] = factory
+                    
+            else:
+                factory = self.soundBuffered[sound]
+                
+            handle = device.play(factory)
+            
+            if is3D and refObj is not None:
+                handle.relative = False
+                handle.location = refObj.worldPosition
+                handle.distance_maximum = distMax
+                
+            return handle
+        else:
+            print("X Sound file not found:", sound)
+    
     def getSceneDict(self, exclude=[]):
         data = {}
         for scn in bge.logic.getSceneList():
