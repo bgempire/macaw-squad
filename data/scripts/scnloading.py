@@ -16,9 +16,7 @@ def runLoading(cont):
 				fadeObjects(own.scene.objects, fadeSpeedFactor)
 			else:
 				own["Fade"] = False
-				msg = "_LoadContext"
-				own.sendMessage(msg)
-				print(msg)
+				own.sendMessage("_LoadContext")
 				own["Loaded"] = True
 			
 		elif own["Loaded"] and own["Fade"]:
@@ -28,9 +26,7 @@ def runLoading(cont):
 			else:
 				own["Fade"] = False
 				own["Finished"] = True
-				msg = "_FinishLoading"
-				own.sendMessage(msg)
-				print(msg)
+				own.sendMessage("_FinishLoading")
 				bgf.freeSceneLibs(own.scene)
 				own.scene.end()
 			
