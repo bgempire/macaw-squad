@@ -8,5 +8,6 @@
     "Persistent" : [
         "*.bgeconf",
         "*.sav",
+        "*.cfg",
     ]
 }

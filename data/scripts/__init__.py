@@ -14,7 +14,7 @@ __all__ = ["BGForce", "bgf"]
 class BGForce:
     FILE_DATA_EXT = ".json"
     FILE_DATA_EXT_HIDDEN = ".dat"
-    FILE_CONFIG_NAME = "Config"
+    FILE_CONFIG_NAME = "Config.cfg"
     FOLDER_DB_NAME = "database"
     FOLDER_LC_NAME = "locale"
     
@@ -24,7 +24,7 @@ class BGForce:
         self.bgfData = {}
         self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=True)
         self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=True)
-        self.config = self.loadFromFile(expandPath("//" + self.FILE_CONFIG_NAME + self.FILE_DATA_EXT), verbose=True)
+        self.config = self.loadFromFile(expandPath("//" + self.FILE_CONFIG_NAME), verbose=True)
         self.inputEvents = self.getInputEvents()
         self.currentContext = ""
         self.gameData.update(self.database["Game"])
@@ -36,7 +36,7 @@ class BGForce:
         try:
             with open(path.as_posix(), "r", encoding="UTF-8") as openedFile:
                 data = openedFile.read()
-                if path.suffix == self.FILE_DATA_EXT:
+                if path.suffix == self.FILE_DATA_EXT or path.name == self.FILE_CONFIG_NAME:
                     data = literal_eval(data)
                 elif path.suffix == self.FILE_DATA_EXT_HIDDEN:
                     data = literal_eval(zlib.decompress(base64.b64decode(data)))
@@ -94,8 +94,8 @@ class BGForce:
             openedFile.write(data)
             if verbose: print("> Saved file to:", targetPath.as_posix())
             
-    def saveConfig(self):
-        path = expandPath("//" + self.FILE_CONFIG_NAME + self.FILE_DATA_EXT)
+    def saveConfig(self, verbose=False):
+        path = expandPath("//" + self.FILE_CONFIG_NAME)
         with open(path, "w") as openedFile:
             openedFile.write(pformat(self.config))
             print("> Config saved to:", path)
