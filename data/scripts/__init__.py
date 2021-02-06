@@ -24,7 +24,16 @@ class BGForce:
         self.bgfData = {}
         self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=True)
         self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=True)
-        self.config = self.loadFromFile(expandPath("//" + self.FILE_CONFIG_NAME), verbose=True)
+        
+        configPath = Path(expandPath("//" + self.FILE_CONFIG_NAME))
+        
+        if configPath.exists():
+            self.config = self.loadFromFile(configPath.as_posix(), verbose=True)
+        else:
+            self.config = self.database["Config"].copy()
+            self.saveConfig()
+            print("> Created config file at:", configPath.as_posix())
+            
         self.inputEvents = self.getInputEvents()
         self.currentContext = ""
         self.gameData.update(self.database["Game"])

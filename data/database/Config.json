@@ -1,0 +1,22 @@
+ # Default config used to create.cfg file in case of not existent
+ 
+{
+    # General
+    "Language": "English",
+    
+    # Input keys
+    "KeyDown": "SKEY",
+    "KeyLeft": "AKEY",
+    "KeyPause": "ESCKEY",
+    "KeyRight": "DKEY",
+    "KeyUp": "WKEY",
+    
+    # Sound
+    "SoundBgmEnable": True,
+    "SoundSfxEnable": True,
+    
+    # Video
+    "VideoFullscreen": True,
+    "VideoResolution": "Native",
+    "VideoVsync": False
+}
