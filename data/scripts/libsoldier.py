@@ -13,6 +13,38 @@ ANIMS = {
 	"Death" : (100, 152, bge.logic.KX_ACTION_MODE_PLAY),
 }
 
+def runSoldier(cont):
+	own = cont.owner
+	always = cont.sensors["Always"]
+	
+	if always.positive:
+		
+		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
+			own["Target"] = True
+		
+		if own.groupObject is not None:
+			if "Enemy" in own.groupObject:
+				own["Enemy"] = own.groupObject["Enemy"]
+		
+		if own["Enemy"]:
+			runEnemy(cont)
+			
+		else:
+			runAlly(cont)
+
+def runAlly(cont):
+	own = cont.owner
+	always = cont.sensors["Always"]
+	
+	if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
+		pass
+	
+	setPropsAlly(cont)
+	
+	if own["OnGround"]:
+		processAnimation(cont)
+		processTrack(cont)
+
 def runEnemy(cont):
 	own = cont.owner
 	always = cont.sensors["Always"]
@@ -24,15 +56,22 @@ def runEnemy(cont):
 	processAnimation(cont)
 	processTrack(cont)
 
-def runAlly(cont):
-	always = cont.sensors["Always"]
+def setPropsAlly(cont):
+	own = cont.owner
+	ray = own.rayCast(own.worldPosition + Vector((0, 0, -1)), own, 1, "Ground")
+	meshObj = own.childrenRecursive["Soldier"]
+	meshGunObj = own.childrenRecursive["SoldierGun"]
 	
-	if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-		pass
-	
-	processAnimation(cont)
-	processTrack(cont)
-	
+	if ray[0] is not None and not own["OnGround"]:
+		own["OnGround"] = True
+		meshObj.replaceMesh("Soldier1")
+		meshGunObj.visible = True
+		
+	elif ray[0] is None and own["OnGround"]:
+		own["OnGround"] = False
+		meshObj.replaceMesh("SoldierParachute")
+		meshGunObj.visible = False
+
 def processTrack(cont):
 	own = cont.owner
 	track = cont.actuators["TrackArmature"]
@@ -44,24 +83,3 @@ def processAnimation(cont):
 	armature = own.childrenRecursive["SoldierArmature"]
 	action = ANIMS[own["Action"]]
 	armature.playAction("Soldier", action[0], action[1], play_mode=action[2])
-
-def runSoldier(cont):
-	always = cont.sensors["Always"]
-	
-	if cont.owner.groupObject is None:
-		cont.owner.endObject()
-		return
-	
-	if always.positive:
-		
-		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-			cont.owner["Target"] = True
-		
-		if "Enemy" in cont.owner.groupObject:
-			cont.owner["Enemy"] = cont.owner.groupObject["Enemy"]
-		
-		if cont.owner["Enemy"]:
-			runEnemy(cont)
-			
-		else:
-			runAlly(cont)

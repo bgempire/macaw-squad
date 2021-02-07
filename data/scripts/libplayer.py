@@ -14,6 +14,7 @@ VIEW_AHEAD_DISTANCE = 6
 VIEW_HEIGHT_DISTANCE = 5
 FIRE_COOLDOWN = 0.2
 BULLET_LIFE_TIME = 120
+ALLY_COOLDOWN = 4.0
 
 def runPlayer(cont):
     always = cont.sensors["Always"]
@@ -193,6 +194,7 @@ def processCamera(cont):
 def processAim(cont):
     own = cont.owner
     mouseOverTargetArea = cont.sensors["MouseOverTargetArea"]
+    mouseOver = cont.sensors["MouseOver"]
     targetObj = own.childrenRecursive["TargetObj"]
     
     if mouseOverTargetArea.positive:
@@ -204,3 +206,11 @@ def processAim(cont):
             bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
             bgf.playSound("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=80)
+            
+        if globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly"):
+            own["AllyCooldown"] = -ALLY_COOLDOWN
+            globalDict["AlliesAlive"] -= 1
+            ally = own.scene.addObject("SoldierCollision")
+            ally.worldPosition = own.worldPosition
+            ally["Enemy"] = False
+            own.sendMessage("UpdateText")

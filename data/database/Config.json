@@ -11,6 +11,7 @@
     "KeyRight": "DKEY",
     "KeyUp": "WKEY",
     "KeyFire": "LEFTMOUSE",
+    "KeyAlly": "RIGHTMOUSE",
     
     # Sound
     "SoundBgmEnable": True,
