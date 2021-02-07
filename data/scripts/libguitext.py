@@ -16,7 +16,6 @@ from scripts import bgf
 bge.logic.aboutBGText = "BGText: A BGE Dynamic Text Utility"
 
 ### Constants ###
-DBG = 0
 CHARS_X = 16
 CHARS_Y = 8
 CHARS_TABLE = {
@@ -55,12 +54,11 @@ def main():
         return
         
     if always.positive and always.status == 1 or message.positive or own["Update"] >= 0:
-        
         if "Disabled" in own.groupObject:
             if own.groupObject["Disabled"]:
                 return
         
-        if DBG: print("> Running text object", own.groupObject)
+        if bgf.debug: print("> Running text object", own.groupObject)
         
         if not "Chars" in own:
             own["Chars"] = []
@@ -75,10 +73,10 @@ def main():
         # Creates the mesh library for all characters of current style
         # Create char lib dict in scene to store char meshes
         if not "CharLib" in own.scene:
-            print("Create char libs")
             own.scene["CharLib"] = {}
-            createCharLibInScene(cont)
             
+        createCharLibInScene(cont)
+        
         # Exit function if not all chars from table were created as libs
         if own["Style"] in own.scene["CharLib"].keys():
             if len(own.scene["CharLib"][own["Style"]].keys()) != len(CHARS_TABLE.keys()):
@@ -102,8 +100,7 @@ def main():
                 updateText(cont)
                 own["LastText"] = own["Text"]
             
-        if DBG:
-            print("  > Ran", own.groupObject, ", time taken:", round(time() - startTime, 4), "seconds")
+        if bgf.debug: print("  > Ran", own.groupObject, ", time taken:", round(time() - startTime, 4), "seconds")
 
 def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
@@ -142,26 +139,26 @@ def createCharLib(cont, char, mesh, style):
 def createCharLibInScene(cont):
     own = cont.owner
     
-    for i in range(1, 6):
+    if not own["Style"] in own.scene["CharLib"].keys():
         
         # The temp char object will provide the base mesh for the libs creation
-        tempChar = own.scene.addObject("_TxtChar" + str(i))
+        tempChar = own.scene.addObject("_TxtChar" + str(own["Style"]))
         mesh = tempChar.meshes[0]
         
         # Create a mesh lib for each char in chars table
         for char in CHARS_TABLE.keys():
             
             try:
-                createCharLib(cont, char, mesh, i)
+                createCharLib(cont, char, mesh, own["Style"])
                 
             except:
-                if DBG: print("x Error in char", char, ", style", i)
+                if bgf.debug: print("x Error in char", char, ", style", own["Style"])
                 return
                 
         # End the temp char previously added
         tempChar.endObject()
         
-        if DBG: print("  > Created lib for style", i, "on scene", own.scene.name)
+        if bgf.debug: print("  > Created lib for style", own["Style"], "on scene", own.scene.name)
         
 def evalColor(txtColor):
     try:
@@ -300,14 +297,14 @@ def equalizeLines(cont, textLines):
     
     # Remove exceeding chars if more than target text chars
     if len(own["Chars"]) > len(textLines):
-        if DBG: print("  > Number of lines is > than new text on:", own.groupObject)
+        if bgf.debug: print("  > Number of lines is > than new text on:", own.groupObject)
         for charObj in own["Chars"][len(textLines):]:
             charObj.endObject()
         own["Chars"] = own["Chars"][0:len(textLines)]
         
     # Add missing chars if less than target text chars
     elif len(own["Chars"]) < len(textLines):
-        if DBG: print("  > Number of lines is < than new text on:", own.groupObject)
+        if bgf.debug: print("  > Number of lines is < than new text on:", own.groupObject)
         for i in range(len(own["Chars"]), len(textLines)):
             own["Chars"].append(addChar(cont))
     
@@ -333,4 +330,4 @@ def updateText(cont):
             
     own["LastStyle"] = own["Style"]
         
-    if DBG: print("  > Text updated:", own.groupObject)
+    if bgf.debug: print("  > Text updated:", own.groupObject)

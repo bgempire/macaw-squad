@@ -35,4 +35,10 @@
     
     # Quit menu
     "QuitConfirm" : "Are you sure you want to quit?",
+    
+    # Pause menu
+    "Paused" : "Paused",
+    "PauseResume" : "Resume",
+    "PauseMainMenu" : "Main Menu",
+    "PauseQuitGame" : "Quit Game",
 }

@@ -49,18 +49,27 @@ def setProps(cont):
     keyRight = bgf.getInputStatus("KeyRight", 2)
     keyUp = bgf.getInputStatus("KeyUp", 2)
     keyDown = bgf.getInputStatus("KeyDown", 2)
+    keyPause = bgf.getInputStatus("KeyPause", 1)
     
-    if not "SoundHelicopter" in own:
-        sound = bgf.playSfx("Helicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
-        if sound is not None:
-            own["SoundHelicopter"] = sound
-            own["SoundHelicopter"].loop_count = -1
-    
-    if "SoundHelicopter" in own:
-        own["SoundHelicopter"].location = own.worldPosition
+    if bgf.gameStatus == "Running":
         
-    aud.device().listener_location = own.scene.active_camera.worldPosition
-    aud.device().listener_orientation = own.scene.active_camera.worldOrientation.to_quaternion()
+        if keyPause:
+            own["SoundHelicopter"].stop()
+            bgf.gameStatus = "Paused"
+            own.sendMessage("ContextPause")
+            return
+            
+        if not "SoundHelicopter" in own or "SoundHelicopter" in own and own["SoundHelicopter"].status != aud.AUD_STATUS_PLAYING:
+            sound = bgf.playSfx("Helicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
+            if sound is not None:
+                own["SoundHelicopter"] = sound
+                own["SoundHelicopter"].loop_count = -1
+        
+        if "SoundHelicopter" in own and bgf.gameStatus == "Running":
+            own["SoundHelicopter"].location = own.worldPosition
+            
+        aud.device().listener_location = own.scene.active_camera.worldPosition
+        aud.device().listener_orientation = own.scene.active_camera.worldOrientation.to_quaternion()
         
     ray = own.rayCast(
         own.worldPosition - Vector((0, 0, 1)), 

@@ -98,7 +98,7 @@ def button(cont):
 				position = eval(group["Command"])
 				
 			except:
-				print("Invalid camera position:", group["Command"])
+				if bgf.debug: print("Invalid camera position:", group["Command"])
 				
 			camera.worldPosition = position
 		
@@ -110,7 +110,7 @@ def button(cont):
 					exec(command)
 					
 				except:
-					print("Could not exec command:", command)
+					if bgf.debug: print("Could not exec command:", command)
 		
 		else:
 			msg = group["Command"].split(" | ")
@@ -120,7 +120,7 @@ def button(cont):
 				own.sendMessage(msg[0], msg[1])
 			else:
 				own.sendMessage(group["Command"])
-			print("Message sent:", group["Command"])
+			if bgf.debug: print("Message sent:", group["Command"])
 		
 def checkbox(cont, init):
 	
@@ -135,7 +135,7 @@ def checkbox(cont, init):
 			target = eval(group["Target"])
 			
 		except:
-			print("Could not eval target:", group["Target"])
+			if bgf.debug: print("Could not eval target:", group["Target"])
 			
 		if target is not None:
 			

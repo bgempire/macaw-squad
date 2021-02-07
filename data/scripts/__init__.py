@@ -10,7 +10,7 @@ from pprint import pprint, pformat
 
 __all__ = ["BGForce", "bgf"]
 
-# bge.logic.setExitKey(bge.events.F12KEY)
+bge.logic.setExitKey(bge.events.F12KEY)
 
 class BGForce:
     FILE_DATA_EXT = ".json"
@@ -24,17 +24,18 @@ class BGForce:
         self.debug = debug
         self.gameData = bge.logic.globalDict
         self.bgfData = {}
-        self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=True)
-        self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=True)
+        self.gameStatus = "Running"
+        self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=debug)
+        self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=debug)
         
         self.config = self.database["Config"].copy()
         configPath = Path(expandPath("//" + self.FILE_CONFIG_NAME))
         
         if configPath.exists():
-            self.config.update(self.loadFromFile(configPath.as_posix(), verbose=True))
+            self.config.update(self.loadFromFile(configPath.as_posix(), verbose=debug))
         else:
             self.saveConfig()
-            print("> Created config file at:", configPath.as_posix())
+            if debug: print("> Created config file at:", configPath.as_posix())
             
         self.inputEvents = self.getInputEvents()
         self.currentContext = ""
@@ -125,9 +126,9 @@ class BGForce:
         path = expandPath("//" + self.FILE_CONFIG_NAME)
         with open(path, "w") as openedFile:
             openedFile.write(pformat(self.config))
-            print("> Config saved to:", path)
+            if verbose: print("> Config saved to:", path)
             
-    def updateVideo(self):
+    def updateVideo(self, verbose=False):
         resolution = None
         if self.config["VideoResolution"][0].isdigit():
             resolution = self.config["VideoResolution"].lower().split("x")
@@ -141,7 +142,7 @@ class BGForce:
             resolution = bge.render.getDisplayDimensions()
             bge.render.setWindowSize(resolution[0], resolution[1])
         if resolution is not None:
-            print("> Resolution set to", resolution)
+            if verbose: print("> Resolution set to", resolution)
         bge.render.setVsync(self.config["VideoVsync"])
         bge.render.setFullScreen(self.config["VideoFullscreen"])
     
@@ -202,7 +203,7 @@ class BGForce:
     
 def _getBGForce() -> BGForce:
     if not "bgf" in dir(bge.logic):
-        bge.logic.bgf = BGForce(debug=True)
+        bge.logic.bgf = BGForce(debug=False)
         
     return bge.logic.bgf
     
