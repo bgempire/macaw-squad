@@ -207,7 +207,7 @@ def processAim(cont):
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
             bgf.playSound("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=80)
             
-        if globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly"):
+        if globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
             own["AllyCooldown"] = -ALLY_COOLDOWN
             globalDict["AlliesAlive"] -= 1
             ally = own.scene.addObject("SoldierCollision")
