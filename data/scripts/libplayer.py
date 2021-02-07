@@ -32,6 +32,7 @@ def setProps(cont):
     mouseOver = cont.sensors["MouseOver"]
     
     if mouseOver.positive:
+        own["Target"] = mouseOver.hitObject
         if "Enemy" in mouseOver.hitObject:
             if mouseOver.hitObject["Enemy"]:
                 globalDict["TargetType"] = "Enemy"
@@ -41,8 +42,10 @@ def setProps(cont):
             globalDict["TargetType"] = "Ally"
         else:
             globalDict["TargetType"] = "None"
+            own["Target"] = None
     else:
         globalDict["TargetType"] = "None"
+        own["Target"] = None
     
     # Key status
     keyLeft = bgf.getInputStatus("KeyLeft", 2)
@@ -204,7 +207,6 @@ def processCamera(cont):
 def processAim(cont):
     own = cont.owner
     mouseOverTargetArea = cont.sensors["MouseOverTargetArea"]
-    mouseOver = cont.sensors["MouseOver"]
     targetObj = own.childrenRecursive["TargetObj"]
     
     if mouseOverTargetArea.positive:
@@ -217,10 +219,11 @@ def processAim(cont):
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
             bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
             
-        if globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
+        if own["Target"] is not None and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
             own["AllyCooldown"] = -ALLY_COOLDOWN
             globalDict["AlliesAlive"] -= 1
             ally = own.scene.addObject("SoldierCollision")
             ally.worldPosition = own.worldPosition
+            ally["Target"] = own["Target"]
             ally["Enemy"] = False
             own.sendMessage("UpdateText")

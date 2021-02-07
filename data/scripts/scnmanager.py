@@ -90,6 +90,7 @@ def setContext(cont, context=None):
         own["CurrentScenes"] = bgf.getSceneDict(exclude=["Manager"])
         own["ContextChangeStep"] = "Done"
         globalDict["Paused"] = False
+        globalDict.update(bgf.database["Game"])
         
 def contextPauseResume(cont, action):
     own = cont.owner
