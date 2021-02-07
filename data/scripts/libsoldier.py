@@ -5,6 +5,7 @@ from mathutils import Vector
 
 TRACK_TIME = 15
 MOVE_SPEED = 0.25
+SOUND_DISTANCE_MAX = 120
 
 ANIMS = {
 	"Idle" : (0, 63, bge.logic.KX_ACTION_MODE_LOOP),
@@ -25,6 +26,10 @@ def runSoldier(cont):
 		if own.groupObject is not None:
 			if "Enemy" in own.groupObject:
 				own["Enemy"] = own.groupObject["Enemy"]
+				
+		if own["Life"] <= 0 and own["Action"] != "Death":
+			own["Action"] = "Death"
+			bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 		
 		if own["Enemy"]:
 			runEnemy(cont)
@@ -37,7 +42,7 @@ def runAlly(cont):
 	always = cont.sensors["Always"]
 	
 	if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-		pass
+		bgf.playSound("VoiceYesSir", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 	
 	setPropsAlly(cont)
 	
@@ -82,4 +87,8 @@ def processAnimation(cont):
 	own = cont.owner
 	armature = own.childrenRecursive["SoldierArmature"]
 	action = ANIMS[own["Action"]]
+	
+	if own["Action"] == "Death" and armature.getActionFrame() >= action[1]-1:
+		own.endObject()
+		return
 	armature.playAction("Soldier", action[0], action[1], play_mode=action[2])
