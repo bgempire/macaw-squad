@@ -16,6 +16,8 @@
     # Sound
     "SoundBgmEnable": True,
     "SoundSfxEnable": True,
+    "SoundBgmVol": 0.8,
+    "SoundSfxVol": 1.0,
     
     # Video
     "VideoFullscreen": True,

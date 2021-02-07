@@ -15,6 +15,7 @@ VIEW_HEIGHT_DISTANCE = 5
 FIRE_COOLDOWN = 0.2
 BULLET_LIFE_TIME = 120
 ALLY_COOLDOWN = 4.0
+SOUND_MAX_DISTANCE = 160
 
 def runPlayer(cont):
     always = cont.sensors["Always"]
@@ -50,7 +51,7 @@ def setProps(cont):
     keyDown = bgf.getInputStatus("KeyDown", 2)
     
     if not "SoundHelicopter" in own:
-        sound = bgf.playSound("Helicopter", buffer=True, is3D=True, refObj=own, distMax=100)
+        sound = bgf.playSfx("Helicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
         if sound is not None:
             own["SoundHelicopter"] = sound
             own["SoundHelicopter"].loop_count = -1
@@ -205,7 +206,7 @@ def processAim(cont):
             own["FireCooldown"] = -FIRE_COOLDOWN
             bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
-            bgf.playSound("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=80)
+            bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
             
         if globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
             own["AllyCooldown"] = -ALLY_COOLDOWN

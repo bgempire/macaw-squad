@@ -27,12 +27,12 @@ class BGForce:
         self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=True)
         self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=True)
         
+        self.config = self.database["Config"].copy()
         configPath = Path(expandPath("//" + self.FILE_CONFIG_NAME))
         
         if configPath.exists():
-            self.config = self.loadFromFile(configPath.as_posix(), verbose=True)
+            self.config.update(self.loadFromFile(configPath.as_posix(), verbose=True))
         else:
-            self.config = self.database["Config"].copy()
             self.saveConfig()
             print("> Created config file at:", configPath.as_posix())
             
@@ -46,7 +46,15 @@ class BGForce:
         if soundsPath.exists():
             for _file in soundsPath.iterdir():
                 if _file.suffix.lower() in (".wav", ".mp3", ".ogg"):
-                    self.soundFiles[_file.stem] = _file
+                    fileName = _file.stem
+                    fileData = {}
+                    if "#" in fileName:
+                        fileName = fileName.split("#")
+                        loopPoints = [literal_eval(t) for t in fileName[1].split("-")]
+                        fileName = fileName[0]
+                        fileData["Loop"] = tuple(loopPoints)
+                    fileData["Path"] = _file
+                    self.soundFiles[fileName] = fileData
         
         self.updateVideo()
     
@@ -138,32 +146,46 @@ class BGForce:
         bge.render.setFullScreen(self.config["VideoFullscreen"])
     
     def playSound(self, sound, buffer=False, is3D=False, refObj=None, distMax=10):
+        device = aud.device()
+        
+        if is3D and refObj is not None:
+            device.distance_model = aud.AUD_DISTANCE_MODEL_LINEAR
+            device.listener_location = refObj.scene.active_camera.worldPosition
+            device.listener_orientation = refObj.scene.active_camera.worldOrientation.to_quaternion()
+            
+        factory = None
+        if not sound in self.soundBuffered.keys():
+            factory = aud.Factory(self.soundFiles[sound]["Path"].as_posix())
+            
+            if buffer:
+                factory = aud.Factory.buffer(factory)
+                self.soundBuffered[sound] = factory
+                
+        else:
+            factory = self.soundBuffered[sound]
+            
+        handle = device.play(factory)
+        
+        if is3D and refObj is not None:
+            handle.relative = False
+            handle.location = refObj.worldPosition
+            handle.distance_maximum = distMax
+            
+        return handle
+    
+    def playSfx(self, sound, buffer=False, is3D=False, refObj=None, distMax=10):
         if self.config["SoundSfxEnable"] and sound in self.soundFiles.keys():
-            device = aud.device()
-            
-            if is3D and refObj is not None:
-                device.distance_model = aud.AUD_DISTANCE_MODEL_LINEAR
-                device.listener_location = refObj.scene.active_camera.worldPosition
-                device.listener_orientation = refObj.scene.active_camera.worldOrientation.to_quaternion()
-                
-            factory = None
-            if not sound in self.soundBuffered.keys():
-                factory = aud.Factory(self.soundFiles[sound].as_posix())
-                
-                if buffer:
-                    factory = aud.Factory.buffer(factory)
-                    self.soundBuffered[sound] = factory
-                    
-            else:
-                factory = self.soundBuffered[sound]
-                
-            handle = device.play(factory)
-            
-            if is3D and refObj is not None:
-                handle.relative = False
-                handle.location = refObj.worldPosition
-                handle.distance_maximum = distMax
-                
+            handle = self.playSound(sound, buffer=buffer, is3D=is3D, refObj=refObj, distMax=distMax)
+            handle.volume = self.config["SoundSfxVol"]
+            return handle
+    
+    def playBgm(self, sound, buffer=False, is3D=False, refObj=None, distMax=10):
+        if sound in self.soundFiles.keys():
+            handle = self.playSound(sound)
+            handle.loop_count = -1
+            if not self.config["SoundBgmEnable"]:
+                handle.pause()
+            handle.volume = self.config["SoundBgmVol"]
             return handle
     
     def getSceneDict(self, exclude=[]):

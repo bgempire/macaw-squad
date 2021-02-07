@@ -12,6 +12,7 @@ def runManager(cont):
 		processMessages(cont)
 		if own["ContextChangeStep"] != "Done":
 			setContext(cont)
+		updateBgm(cont)
 
 def initManager(cont):
 	own = cont.owner
@@ -81,3 +82,36 @@ def setContext(cont, context=None):
 	elif own["ContextChangeStep"] == "FinishLoading":
 		own["CurrentScenes"] = bgf.getSceneDict(exclude=["Manager"])
 		own["ContextChangeStep"] = "Done"
+		
+def updateBgm(cont):
+	own = cont.owner
+	if not "Bgm" in own:
+		own["Bgm"] = {"CurBgm" : "", "Handle" : None, "Loop" : None}
+		
+	if "Bgm" in bgf.database["Contexts"][bgf.currentContext].keys():
+		curBgm = bgf.database["Contexts"][bgf.currentContext]["Bgm"]
+		if curBgm != own["Bgm"]["CurBgm"]:
+			if own["Bgm"]["Handle"] is not None:
+				own["Bgm"]["Handle"].stop()
+			own["Bgm"]["Handle"] = bgf.playBgm(curBgm)
+			own["Bgm"]["CurBgm"] = curBgm
+			if own["Bgm"]["Handle"] is not None:
+				print("> BGM played:", own["Bgm"]["CurBgm"])
+				if "Loop" in bgf.soundFiles[curBgm].keys():
+					own["Bgm"]["Loop"] = bgf.soundFiles[curBgm]["Loop"]
+				else:
+					own["Bgm"]["Loop"] = None
+					
+		elif own["Bgm"]["Handle"] is not None:
+			own["Bgm"]["Handle"].volume = bgf.config["SoundBgmVol"]
+			if own["Bgm"]["Loop"] is not None:
+				if own["Bgm"]["Handle"].position >= own["Bgm"]["Loop"][1]:
+					own["Bgm"]["Handle"].position = own["Bgm"]["Loop"][0]
+					print("> BGM looped:", own["Bgm"]["CurBgm"])
+					
+			if not bgf.config["SoundBgmEnable"]:
+				own["Bgm"]["Handle"].pause()
+				
+			else:
+				own["Bgm"]["Handle"].resume()
+		

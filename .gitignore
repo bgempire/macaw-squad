@@ -10,3 +10,4 @@ DELETE-ME
 *.blend2
 /source/tools/Windows/ResourceHacker.ini
 /data/*.cfg
+/data.dat

@@ -65,6 +65,7 @@ def widget(cont):
 	# Mouse over
 	if mouseOver.positive and not lmb.positive:
 		own.color = bgf.database["Gui"]["Widget"]["ColorHover"]
+		bgf.playSfx("MouseHover", buffer=True)
 	
 	# Mouse not over
 	if not mouseOver.positive and not lmb.positive:
@@ -73,6 +74,7 @@ def widget(cont):
 	# Mouse clicking
 	if mouseOver.positive and lmb.positive and lmb.status == 1:
 		own.color = bgf.database["Gui"]["Widget"]["ColorClick"]
+		bgf.playSfx("MouseClick", buffer=True)
 		
 		if "Button" in own:
 			button(cont)
