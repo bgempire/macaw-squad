@@ -35,9 +35,4 @@
     
     # Quit menu
     "QuitConfirm" : "Tem certeza de que quer sair?",
-    
-    # Game
-    "HudAllies" : "Aliados: ",
-    "HudHostages" : "Reféns: ",
-    "HudKills" : "Baixas: ",
 }
