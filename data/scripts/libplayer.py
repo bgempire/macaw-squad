@@ -51,11 +51,11 @@ def setProps(cont):
     keyDown = bgf.getInputStatus("KeyDown", 2)
     keyPause = bgf.getInputStatus("KeyPause", 1)
     
-    if bgf.gameStatus == "Running":
+    if not globalDict["Paused"]:
         
         if keyPause:
             own["SoundHelicopter"].stop()
-            bgf.gameStatus = "Paused"
+            globalDict["Paused"] = True
             own.sendMessage("ContextPause")
             return
             
@@ -65,7 +65,7 @@ def setProps(cont):
                 own["SoundHelicopter"] = sound
                 own["SoundHelicopter"].loop_count = -1
         
-        if "SoundHelicopter" in own and bgf.gameStatus == "Running":
+        if "SoundHelicopter" in own and not globalDict["Paused"]:
             own["SoundHelicopter"].location = own.worldPosition
             
         aud.device().listener_location = own.scene.active_camera.worldPosition

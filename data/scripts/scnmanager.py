@@ -1,5 +1,6 @@
 import bge
 
+from bge.logic import globalDict
 from scripts import bgf
 
 def runManager(cont):
@@ -44,10 +45,10 @@ def processMessages(cont):
             if subject == "UpdateVideo":
                 bgf.updateVideo()
             if subject == "ContextPause":
-                bgf.gameStatus = "Paused"
+                globalDict["Paused"] = True
                 contextPauseResume(cont, "Pause")
             if subject == "ContextResume":
-                bgf.gameStatus = "Running"
+                globalDict["Paused"] = False
                 contextPauseResume(cont, "Resume")
 
 def setContext(cont, context=None):
@@ -88,7 +89,7 @@ def setContext(cont, context=None):
     elif own["ContextChangeStep"] == "FinishLoading":
         own["CurrentScenes"] = bgf.getSceneDict(exclude=["Manager"])
         own["ContextChangeStep"] = "Done"
-        bgf.gameStatus = "Running"
+        globalDict["Paused"] = False
         
 def contextPauseResume(cont, action):
     own = cont.owner

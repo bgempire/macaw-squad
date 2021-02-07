@@ -24,7 +24,6 @@ class BGForce:
         self.debug = debug
         self.gameData = bge.logic.globalDict
         self.bgfData = {}
-        self.gameStatus = "Running"
         self.database = self.loadFromDir(expandPath("//" + self.FOLDER_DB_NAME), verbose=debug)
         self.locale = self.loadFromDir(expandPath("//" + self.FOLDER_LC_NAME), verbose=debug)
         
