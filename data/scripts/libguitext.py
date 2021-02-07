@@ -7,7 +7,7 @@ import bge
 import os
 from textwrap import wrap
 from pprint import pprint, pformat
-from bge.logic import globalDict, LibNew
+from bge.logic import globalDict
 from mathutils import Matrix
 from ast import literal_eval
 from time import time
@@ -70,20 +70,6 @@ def main():
         # Get and set properties from group to owner
         getPropsFromGroup(cont)
             
-        # Creates the mesh library for all characters of current style
-        # Create char lib dict in scene to store char meshes
-        if not "CharLib" in own.scene:
-            own.scene["CharLib"] = {}
-            
-        createCharLibInScene(cont)
-        
-        # Exit function if not all chars from table were created as libs
-        if own["Style"] in own.scene["CharLib"].keys():
-            if len(own.scene["CharLib"][own["Style"]].keys()) != len(CHARS_TABLE.keys()):
-                return
-        else:
-            return
-            
         if message.positive:
             bodies = [b for b in message.bodies]
             
@@ -104,62 +90,7 @@ def main():
 
 def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
-
-def createCharLib(cont, char, mesh, style):
-    own = cont.owner
-    
-    # Create a new mesh lib for current character
-    libName = own.scene.name + "-" + str(style) + "-" + str(ord(char))
-    mesh = LibNew(libName, "Mesh", [mesh.name])[0]
-    
-    ### Transform UV of created mesh to fit corresponding char ###
-    # Scale UV to single character size (horizontally)
-    transformMatrix = Matrix.Scale(1/CHARS_X, 4, (1, 0, 0))
-    mesh.transformUV(-1, transformMatrix)
-    
-    # Scale UV to single character size (vertically)
-    transformMatrix = Matrix.Scale(1/CHARS_Y, 4, (0, 1, 0))
-    mesh.transformUV(-1, transformMatrix)
-    
-    # Move UV to the top left of texture (first character)
-    transformMatrix = Matrix.Translation((0, CHARS_Y-(1/CHARS_Y), 0))
-    mesh.transformUV(-1, transformMatrix)
-    
-    # Translate UV to the respective position of char in chars table
-    x, y = CHARS_TABLE[char][0], CHARS_TABLE[char][1]
-    transformMatrix = Matrix.Translation((x/CHARS_X, CHARS_Y-(y/CHARS_Y), 0))
-    mesh.transformUV(-1, transformMatrix)
-    
-    ### Store created mesh reference in scene for current style ###
-    if not style in own.scene["CharLib"].keys():
-        own.scene["CharLib"][style] = {}
-        
-    own.scene["CharLib"][style][ord(char)] = mesh
-    
-def createCharLibInScene(cont):
-    own = cont.owner
-    
-    if not own["Style"] in own.scene["CharLib"].keys():
-        
-        # The temp char object will provide the base mesh for the libs creation
-        tempChar = own.scene.addObject("_TxtChar" + str(own["Style"]))
-        mesh = tempChar.meshes[0]
-        
-        # Create a mesh lib for each char in chars table
-        for char in CHARS_TABLE.keys():
-            
-            try:
-                createCharLib(cont, char, mesh, own["Style"])
-                
-            except:
-                if bgf.debug: print("x Error in char", char, ", style", own["Style"])
-                return
-                
-        # End the temp char previously added
-        tempChar.endObject()
-        
-        if bgf.debug: print("  > Created lib for style", own["Style"], "on scene", own.scene.name)
-        
+  
 def evalColor(txtColor):
     try:
         # Try to get a literal color if string starts with [ or (
@@ -274,6 +205,7 @@ def getTextJustified(cont, asString=False):
 def addChar(cont):
     obj = cont.owner.scene.addObject("_TxtCharBlank", cont.owner)
     obj.setParent(cont.owner)
+    obj.localPosition.z += 0.5
     return obj
 
 def updateChar(cont, obj, char, x, y):
@@ -281,10 +213,8 @@ def updateChar(cont, obj, char, x, y):
     
     if obj["Char"] != ord(char) or own["LastStyle"] != own["Style"]:
         obj["Char"] = ord(char)
-        
-        if obj["Char"] in own.scene["CharLib"][own["Style"]].keys():
-            charMesh = own.scene["CharLib"][own["Style"]][obj["Char"]]
-            obj.replaceMesh(charMesh)
+        obj.replaceMesh("_TxtChar" + str(own["Style"]))
+        obj.playAction("TextChar", ord(char), ord(char))
         
     obj.color = own["ColorEval"]
     obj.visible = not char in (" ", "\t", "\n")
