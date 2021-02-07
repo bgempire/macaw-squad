@@ -31,6 +31,8 @@ def setProps(cont):
     own = cont.owner
     mouseOver = cont.sensors["MouseOver"]
     
+    own.scene["Player"] = own
+    
     if mouseOver.positive:
         own["Target"] = mouseOver.hitObject
         if "Enemy" in mouseOver.hitObject:
@@ -219,7 +221,7 @@ def processAim(cont):
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
             bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
             
-        if own["Target"] is not None and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
+        if own["Target"] is not None and "Hostage" in own["Target"] and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
             own["AllyCooldown"] = -ALLY_COOLDOWN
             globalDict["AlliesAlive"] -= 1
             ally = own.scene.addObject("SoldierCollision")
