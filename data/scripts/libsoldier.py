@@ -54,6 +54,9 @@ def runSoldier(cont):
 	
 	if always.positive:
 		
+		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
+			cont.owner["Target"] = True
+		
 		if "Enemy" in cont.owner.groupObject:
 			cont.owner["Enemy"] = cont.owner.groupObject["Enemy"]
 		

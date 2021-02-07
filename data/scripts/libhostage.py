@@ -25,7 +25,7 @@ def runHostage(cont):
 	if always.positive:
 		
 		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-			pass
+			cont.owner["Target"] = True
 		
 		if "Free" in own.groupObject:
 			own["Free"] = own.groupObject["Free"]

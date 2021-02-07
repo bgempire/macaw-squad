@@ -10,6 +10,7 @@
     "KeyPause": "ESCKEY",
     "KeyRight": "DKEY",
     "KeyUp": "WKEY",
+    "KeyFire": "LEFTMOUSE",
     
     # Sound
     "SoundBgmEnable": True,

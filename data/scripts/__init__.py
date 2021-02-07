@@ -138,7 +138,7 @@ class BGForce:
         bge.render.setFullScreen(self.config["VideoFullscreen"])
     
     def playSound(self, sound, buffer=False, is3D=False, refObj=None, distMax=10):
-        if sound in self.soundFiles.keys():
+        if self.config["SoundSfxEnable"] and sound in self.soundFiles.keys():
             device = aud.device()
             
             if is3D and refObj is not None:
@@ -165,8 +165,6 @@ class BGForce:
                 handle.distance_maximum = distMax
                 
             return handle
-        else:
-            print("X Sound file not found:", sound)
     
     def getSceneDict(self, exclude=[]):
         data = {}

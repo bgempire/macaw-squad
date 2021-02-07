@@ -12,6 +12,8 @@ MOVE_SPEED = 0.25
 CAMERA_SMOOTH = 80
 VIEW_AHEAD_DISTANCE = 6
 VIEW_HEIGHT_DISTANCE = 5
+FIRE_COOLDOWN = 0.2
+BULLET_LIFE_TIME = 120
 
 def runPlayer(cont):
     always = cont.sensors["Always"]
@@ -21,6 +23,7 @@ def runPlayer(cont):
         processTrack(cont)
         processMovement(cont)
         processCamera(cont)
+        processAim(cont)
 
 def setProps(cont):
     own = cont.owner
@@ -30,7 +33,7 @@ def setProps(cont):
         if "Enemy" in mouseOver.hitObject:
             if mouseOver.hitObject["Enemy"]:
                 globalDict["TargetType"] = "Enemy"
-            elif not mouseOver.hitObject["Enemy"]:
+            else:
                 globalDict["TargetType"] = "Ally"
         elif "Hostage" in mouseOver.hitObject:
             globalDict["TargetType"] = "Ally"
@@ -46,8 +49,10 @@ def setProps(cont):
     keyDown = bgf.getInputStatus("KeyDown", 2)
     
     if not "SoundHelicopter" in own:
-        own["SoundHelicopter"] = bgf.playSound("Helicopter", buffer=True, is3D=True, refObj=own, distMax=100)
-        own["SoundHelicopter"].loop_count = -1
+        sound = bgf.playSound("Helicopter", buffer=True, is3D=True, refObj=own, distMax=100)
+        if sound is not None:
+            own["SoundHelicopter"] = sound
+            own["SoundHelicopter"].loop_count = -1
     
     if "SoundHelicopter" in own:
         own["SoundHelicopter"].location = own.worldPosition
@@ -184,3 +189,18 @@ def processCamera(cont):
             posVector.x = VIEW_AHEAD_DISTANCE
         
     axis.worldPosition = own.worldPosition + posVector
+    
+def processAim(cont):
+    own = cont.owner
+    mouseOverTargetArea = cont.sensors["MouseOverTargetArea"]
+    targetObj = own.childrenRecursive["TargetObj"]
+    
+    if mouseOverTargetArea.positive:
+        targetObj.worldPosition = mouseOverTargetArea.hitPosition
+        targetObj.worldPosition.y = 0
+        
+        if own["FireCooldown"] >= 0 and own.worldPosition.z > targetObj.worldPosition.z and bgf.getInputStatus("KeyFire"):
+            own["FireCooldown"] = -FIRE_COOLDOWN
+            bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
+            bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
+            bgf.playSound("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=80)
