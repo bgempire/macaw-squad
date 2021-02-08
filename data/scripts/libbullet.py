@@ -22,7 +22,7 @@ def runBullet(cont):
 				if "Player" in obj:
 					globalDict["Life"] = obj["Life"]
 					sound = bgf.playSfx("ShotHitMetal", buffer=True, is3D=True, refObj=obj, distMax=150)
-					sound.pitch = 1 + (random() * 0.5 - 0.25)
+					if sound is not None: sound.pitch = 1 + (random() * 0.5 - 0.25)
 					own.sendMessage("UpdateText")
 				else:
 					blood = own.scene.addObject("BloodHit", own, 120)
@@ -31,7 +31,7 @@ def runBullet(cont):
 					blood.localScale *= 2
 					blood.alignAxisToVect(blood.getVectTo(own.scene.active_camera.worldPosition)[1], 2)
 					sound = bgf.playSfx("ShotHit", buffer=True, is3D=True, refObj=obj, distMax=150)
-					sound.pitch = 1 + (random() * 0.5 - 0.25)
+					if sound is not None: sound.pitch = 1 + (random() * 0.5 - 0.25)
 				
 				own.endObject()
 				return

@@ -53,7 +53,7 @@ def runSoldier(cont):
 			if own["Enemy"]:
 				globalDict["EnemiesKilled"] += 1
 			own.sendMessage("UpdateText")
-			own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+			own["VoiceDeath"] = bgf.playSfx("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 		
 		if own["Enemy"]:
 			own["IsEnemy"] = True
@@ -68,7 +68,7 @@ def runAlly(cont):
 	always = cont.sensors["Always"]
 	
 	if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-		bgf.playSound("VoiceYesSir", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+		bgf.playSfx("VoiceYesSir", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 	
 	setPropsAlly(cont)
 	

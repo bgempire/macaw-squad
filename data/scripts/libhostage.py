@@ -42,7 +42,7 @@ def runHostageTied(cont):
 	free.visible = False
 	
 	if own["Life"] <= 0 and not "VoiceDeath" in own:
-		own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+		own["VoiceDeath"] = bgf.playSfx("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 		own.endObject()
 		return
 	
@@ -59,7 +59,7 @@ def runHostageFree(cont):
 		
 	if own["Life"] <= 0 and own["Action"] != "Death" and not "VoiceDeath" in own:
 		own["Action"] = "Death"
-		own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+		own["VoiceDeath"] = bgf.playSfx("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 	
 	processAnimation(cont, "Hostage", ANIMS=ANIMS)
 	processTrack(cont)

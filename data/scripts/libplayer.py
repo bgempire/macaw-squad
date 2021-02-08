@@ -76,7 +76,8 @@ def setProps(cont):
     if not globalDict["Paused"]:
         
         if keyPause:
-            own["SoundHelicopter"].stop()
+            if "SoundHelicopter" in own:
+                own["SoundHelicopter"].stop()
             globalDict["Paused"] = True
             own.sendMessage("ContextPause")
             return
