@@ -6,4 +6,5 @@
     "HostagesSaved" : 0,
     "EnemiesKilled" : 0,
     "TargetType" : "None",
+    "CurrentEnemies" : 0,
 }

@@ -6,8 +6,10 @@ from random import randint
 from bge.logic import globalDict
 from .humanscommon import processAnimation, processMovement, processTrack
 
-SPAWNER_PROBABILITY = 10
+SPAWNER_PROBABILITY = 5
+SPAWNER_DISTANCE = 100
 SOUND_DISTANCE_MAX = 120
+ENEMY_FIRE_DISTANCE = 25
 
 ANIMS = {
 	"Idle" : (0, 63, bge.logic.KX_ACTION_MODE_LOOP),
@@ -21,10 +23,13 @@ def runSpawner(cont):
 	always = cont.sensors["Always"]
 	
 	if always.positive:
-		if randint(0, 100) < SPAWNER_PROBABILITY:
+		if globalDict["CurrentEnemies"] < bgf.database["Default"]["MaxEnemies"] \
+		and randint(0, 100) < SPAWNER_PROBABILITY \
+		and "Player" in own.scene and own.getDistanceTo(own.scene["Player"]) < SPAWNER_DISTANCE:
 			enemy = own.scene.addObject("SoldierCollision")
 			enemy.worldPosition = own.worldPosition
 			enemy["Enemy"] = True
+			globalDict["CurrentEnemies"] += 1
 
 def runSoldier(cont):
 	own = cont.owner
@@ -47,9 +52,11 @@ def runSoldier(cont):
 			own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 		
 		if own["Enemy"]:
+			own["IsEnemy"] = True
 			runEnemy(cont)
 			
 		else:
+			own["IsAlly"] = True
 			runAlly(cont)
 
 def runAlly(cont):
@@ -76,6 +83,7 @@ def runEnemy(cont):
 		
 	processAnimation(cont, "Soldier", ANIMS=ANIMS)
 	processTrack(cont)
+	processMovement(cont)
 
 def setPropsAlly(cont):
 	own = cont.owner

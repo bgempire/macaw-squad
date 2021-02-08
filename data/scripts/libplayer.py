@@ -34,7 +34,7 @@ def setProps(cont):
     
     own.scene["Player"] = own
     if not "Allies" in own.scene:
-        own.scene["Allies"] = []
+        own.scene["Allies"] = [own]
         
     if collision.positive and own["OnGround"]:
         for obj in collision.hitObjectList:

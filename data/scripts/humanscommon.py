@@ -14,6 +14,17 @@ def processTrack(cont):
 	target = own.childrenRecursive["TargetObject"]
 	track.object = target
 	track.time = 0
+	
+	if "Enemy" in own and own["Enemy"]:
+		targetObj = None
+		dist = 10000
+		for obj in own.scene["Allies"]:
+			targetDist = own.getDistanceTo(obj)
+			if targetDist < dist:
+				dist = targetDist
+				targetObj = obj
+		own["Target"] = targetObj
+	
 	if "Target" in own and own["Target"] is not None:
 		target.worldPosition = own["Target"].worldPosition
 		cont.activate(track)
@@ -28,6 +39,8 @@ def processAnimation(cont, actionName="", ANIMS={}):
 	if own["Action"] == "Death" and armature.getActionFrame() >= action[1]-1:
 		if own in own.scene["Allies"]:
 			own.scene["Allies"].remove(own)
+		if "Enemy" in own and own["Enemy"]:
+			globalDict["CurrentEnemies"] -= 1
 		own.endObject()
 		return
 		
