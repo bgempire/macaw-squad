@@ -2,15 +2,14 @@ import bge
 
 from scripts import bgf
 from mathutils import Vector
+from .humanscommon import processAnimation, processMovement, processTrack
 
-TRACK_TIME = 15
-MOVE_SPEED = 0.25
-
+SOUND_DISTANCE_MAX = 120
 ANIMS = {
-	"Idle" : (0, 129, bge.logic.KX_ACTION_MODE_LOOP),
+	"Idle_" : (0, 129, bge.logic.KX_ACTION_MODE_LOOP),
 	"Tied" : (0, 50, bge.logic.KX_ACTION_MODE_LOOP),
 	"Run" : (130, 151, bge.logic.KX_ACTION_MODE_LOOP),
-	"Help" : (160, 255, bge.logic.KX_ACTION_MODE_PLAY),
+	"Idle" : (160, 255, bge.logic.KX_ACTION_MODE_PLAY),
 	"Death" : (260, 328, bge.logic.KX_ACTION_MODE_PLAY),
 }
 
@@ -23,9 +22,7 @@ def runHostage(cont):
 		return
 	
 	if always.positive:
-		
-		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-			cont.owner["Target"] = True
+		cont.owner["Target"] = own.scene["Player"] if "Player" in own.scene else None
 		
 		if "Free" in own.groupObject:
 			own["Free"] = own.groupObject["Free"]
@@ -44,6 +41,11 @@ def runHostageTied(cont):
 	tied.visible = True
 	free.visible = False
 	
+	if own["Life"] <= 0 and not "VoiceDeath" in own:
+		own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+		own.endObject()
+		return
+	
 	action = ANIMS["Tied"]
 	tied.playAction("HostageTied", action[0], action[1], play_mode=action[2])
 			
@@ -54,13 +56,11 @@ def runHostageFree(cont):
 	
 	tied.visible = False
 	free.visible = True
+		
+	if own["Life"] <= 0 and own["Action"] != "Death" and not "VoiceDeath" in own:
+		own["Action"] = "Death"
+		own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 	
-	armature = own.childrenRecursive["HostageArmature"]
-	action = ANIMS[own["Action"]]
-	armature.playAction("Hostage", action[0], action[1], play_mode=action[2])
-	
-def processTrack(cont):
-	own = cont.owner
-	track = cont.actuators["TrackArmature"]
-	track.object = own.childrenRecursive["SoldierTarget"]
-	cont.activate(track)
+	processAnimation(cont, "Hostage", ANIMS=ANIMS)
+	processTrack(cont)
+	processMovement(cont)

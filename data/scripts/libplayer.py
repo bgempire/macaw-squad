@@ -10,9 +10,9 @@ LANDING_DISTANCE = 7
 MOVE_ACCEL = 0.025
 MOVE_SPEED = 0.25
 CAMERA_SMOOTH = 80
-VIEW_AHEAD_DISTANCE = 6
-VIEW_HEIGHT_DISTANCE = 5
-FIRE_COOLDOWN = 0.2
+VIEW_AHEAD_DISTANCE = 5
+VIEW_HEIGHT_DISTANCE = 3
+FIRE_COOLDOWN = 0.175
 BULLET_LIFE_TIME = 120
 ALLY_COOLDOWN = 4.0
 SOUND_MAX_DISTANCE = 160
@@ -30,8 +30,25 @@ def runPlayer(cont):
 def setProps(cont):
     own = cont.owner
     mouseOver = cont.sensors["MouseOver"]
+    collision = cont.sensors["Collision"]
     
     own.scene["Player"] = own
+    if not "Allies" in own.scene:
+        own.scene["Allies"] = []
+        
+    if collision.positive and own["OnGround"]:
+        for obj in collision.hitObjectList:
+            if "Life" in obj and obj["Life"] > 0:
+                if "Target" in obj and obj["Target"] == own \
+                and ("Enemy" in obj and not obj["Enemy"] \
+                or "Hostage" in obj and obj["Free"]):
+                    if "Enemy" in obj:
+                        globalDict["AlliesAlive"] += 1
+                        own.scene["Allies"].remove(obj)
+                    elif "Hostage" in obj:
+                        globalDict["HostagesSaved"] += 1
+                    obj.endObject()
+        own.sendMessage("UpdateText")
     
     if mouseOver.positive:
         own["Target"] = mouseOver.hitObject
@@ -80,10 +97,14 @@ def setProps(cont):
         own.worldPosition - Vector((0, 0, 1)), 
         own.worldPosition, 
         LANDING_DISTANCE, 
-        "Ground"
+        "Ground",
+        1,
+        True
     )
     
     own["Landing"] = True if ray[0] is not None else False
+    if own["Landing"]:
+        own["OnGround"] = True if own.getDistanceTo(ray[1]) < 1.3 else False
     
     # Left and right keys
     if keyLeft and not keyRight:
@@ -221,11 +242,12 @@ def processAim(cont):
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
             bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
             
-        if own["Target"] is not None and "Hostage" in own["Target"] and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
+        if own["Target"] is not None and "Hostage" in own["Target"] and not own["Target"]["Free"] and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):
             own["AllyCooldown"] = -ALLY_COOLDOWN
             globalDict["AlliesAlive"] -= 1
             ally = own.scene.addObject("SoldierCollision")
             ally.worldPosition = own.worldPosition
             ally["Target"] = own["Target"]
             ally["Enemy"] = False
+            own.scene["Allies"].append(ally)
             own.sendMessage("UpdateText")

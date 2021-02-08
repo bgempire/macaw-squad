@@ -15,7 +15,7 @@
 
 {
 	"SplashScreen" : {
-		"Bgm" : "CallToArms",
+		"Bgm" : "DayOfGlory",
 		"Scenes" : [
 			{
 				"Name" : "ScnSplashScreen",
@@ -26,7 +26,7 @@
 	},
 	
 	"MainMenu" : {
-		"Bgm" : "CallToArms",
+		"Bgm" : "DayOfGlory",
 		"Default" : True,
 		"Loading" : "ScnLoading",
 		"Scenes" : [

@@ -2,9 +2,11 @@ import bge
 
 from scripts import bgf
 from mathutils import Vector
+from random import randint
+from bge.logic import globalDict
+from .humanscommon import processAnimation, processMovement, processTrack
 
-TRACK_TIME = 15
-MOVE_SPEED = 0.25
+SPAWNER_PROBABILITY = 10
 SOUND_DISTANCE_MAX = 120
 
 ANIMS = {
@@ -14,6 +16,16 @@ ANIMS = {
 	"Death" : (100, 152, bge.logic.KX_ACTION_MODE_PLAY),
 }
 
+def runSpawner(cont):
+	own = cont.owner
+	always = cont.sensors["Always"]
+	
+	if always.positive:
+		if randint(0, 100) < SPAWNER_PROBABILITY:
+			enemy = own.scene.addObject("SoldierCollision")
+			enemy.worldPosition = own.worldPosition
+			enemy["Enemy"] = True
+
 def runSoldier(cont):
 	own = cont.owner
 	always = cont.sensors["Always"]
@@ -21,15 +33,18 @@ def runSoldier(cont):
 	if always.positive:
 		
 		if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
-			own["Target"] = True
+			pass
 		
 		if own.groupObject is not None:
 			if "Enemy" in own.groupObject:
 				own["Enemy"] = own.groupObject["Enemy"]
 				
-		if own["Life"] <= 0 and own["Action"] != "Death":
+		if own["Life"] <= 0 and own["Action"] != "Death" and not "VoiceDeath" in own:
 			own["Action"] = "Death"
-			bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
+			if own["Enemy"]:
+				globalDict["EnemiesKilled"] += 1
+			own.sendMessage("UpdateText")
+			own["VoiceDeath"] = bgf.playSound("VoiceDeath", buffer=True, is3D=True, refObj=own, distMax=SOUND_DISTANCE_MAX)
 		
 		if own["Enemy"]:
 			runEnemy(cont)
@@ -47,8 +62,9 @@ def runAlly(cont):
 	setPropsAlly(cont)
 	
 	if own["OnGround"]:
-		processAnimation(cont)
+		processAnimation(cont, "Soldier", ANIMS=ANIMS)
 		processTrack(cont)
+		processMovement(cont)
 
 def runEnemy(cont):
 	own = cont.owner
@@ -58,14 +74,20 @@ def runEnemy(cont):
 		own.childrenRecursive["Soldier"].replaceMesh("Soldier2")
 		own.childrenRecursive["SoldierGun"].replaceMesh("AK47")
 		
-	processAnimation(cont)
+	processAnimation(cont, "Soldier", ANIMS=ANIMS)
 	processTrack(cont)
 
 def setPropsAlly(cont):
 	own = cont.owner
+	collision = cont.sensors["Collision"]
 	ray = own.rayCast(own.worldPosition + Vector((0, 0, -1)), own, 1, "Ground")
 	meshObj = own.childrenRecursive["Soldier"]
 	meshGunObj = own.childrenRecursive["SoldierGun"]
+	
+	if collision.positive:
+		if "Hostage" in collision.hitObject and not collision.hitObject["Free"]:
+			collision.hitObject["Free"] = True
+			bgf.playSfx("VoiceThankYou", buffer=True, is3D=True, refObj=collision.hitObject, distMax=SOUND_DISTANCE_MAX)
 	
 	if ray[0] is not None and not own["OnGround"]:
 		own["OnGround"] = True
@@ -76,19 +98,4 @@ def setPropsAlly(cont):
 		own["OnGround"] = False
 		meshObj.replaceMesh("SoldierParachute")
 		meshGunObj.visible = False
-
-def processTrack(cont):
-	own = cont.owner
-	track = cont.actuators["TrackArmature"]
-	track.object = own.childrenRecursive["SoldierTarget"]
-	cont.activate(track)
-
-def processAnimation(cont):
-	own = cont.owner
-	armature = own.childrenRecursive["SoldierArmature"]
-	action = ANIMS[own["Action"]]
-	
-	if own["Action"] == "Death" and armature.getActionFrame() >= action[1]-1:
-		own.endObject()
-		return
-	armature.playAction("Soldier", action[0], action[1], play_mode=action[2])
+		
