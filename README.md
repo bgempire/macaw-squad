@@ -1,5 +1,10 @@
 # Macaw Squad
 
+Macaw Squad is a Choplifter inspired game made for the game jam BGMC 34 on Blender Artist forum.
+See the game topic on the forum [here](https://blenderartists.org/t/bgmc-34-macaw-squad).
+
+## Instructions
+
 - **Left mouse:** Shoot
 - **Right mouse:** Release soldier when targeting a hostage
 - **W, A, S, D:** Move
