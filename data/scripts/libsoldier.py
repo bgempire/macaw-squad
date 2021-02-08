@@ -9,7 +9,11 @@ from .humanscommon import processAnimation, processMovement, processTrack
 SPAWNER_PROBABILITY = 5
 SPAWNER_DISTANCE = 100
 SOUND_DISTANCE_MAX = 120
-ENEMY_FIRE_DISTANCE = 25
+ENEMY_FIRE_DISTANCE = 15
+FIRE_COOLDOWN = 0.25
+BULLET_LIFE_TIME = 120
+SOUND_MAX_DISTANCE = 160
+FIRE_TIME = 0.7
 
 ANIMS = {
 	"Idle" : (0, 63, bge.logic.KX_ACTION_MODE_LOOP),
@@ -81,9 +85,21 @@ def runEnemy(cont):
 		own.childrenRecursive["Soldier"].replaceMesh("Soldier2")
 		own.childrenRecursive["SoldierGun"].replaceMesh("AK47")
 		
+	if "Target" in own and own["Target"] is not None and not own["Target"].invalid and own["Life"] > 0:
+		if own.getDistanceTo(own["Target"]) < ENEMY_FIRE_DISTANCE and own["FireTime"] > FIRE_TIME:
+			own["FireTime"] = -FIRE_TIME
+		if own["FireCooldown"] >= 0 and own["FireTime"] < 0:
+			own["FireCooldown"] = -FIRE_COOLDOWN
+			bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
+			bullet["Emitter"] = own
+			bullet.alignAxisToVect(bullet.getVectTo(own["Target"].worldPosition)[1], 1)
+			bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
+			own["Action"] = "Fire"
+				
 	processAnimation(cont, "Soldier", ANIMS=ANIMS)
 	processTrack(cont)
-	processMovement(cont)
+	if own["FireTime"] > FIRE_TIME:
+		processMovement(cont)
 
 def setPropsAlly(cont):
 	own = cont.owner

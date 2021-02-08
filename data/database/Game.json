@@ -7,4 +7,5 @@
     "EnemiesKilled" : 0,
     "TargetType" : "None",
     "CurrentEnemies" : 0,
+    "Life" : 1000,
 }

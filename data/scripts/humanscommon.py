@@ -7,6 +7,8 @@ from bge.logic import globalDict
 
 TRACK_TIME = 10
 MOVE_SPEED = 0.045
+FIRE_COOLDOWN = 0.2
+FIRE_TIME = 1.0
 
 def processTrack(cont):
 	own = cont.owner
@@ -35,6 +37,9 @@ def processAnimation(cont, actionName="", ANIMS={}):
 	own = cont.owner
 	armature = own.childrenRecursive["CharacterArmature"]
 	action = ANIMS[own["Action"]]
+	
+	if own["Action"] == "Fire" and own["FireTime"] > FIRE_TIME:
+		own["Action"] = "Idle"
 	
 	if own["Action"] == "Death" and armature.getActionFrame() >= action[1]-1:
 		if own in own.scene["Allies"]:

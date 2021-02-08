@@ -240,6 +240,7 @@ def processAim(cont):
             own["FireCooldown"] = -FIRE_COOLDOWN
             bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
+            bullet["Emitter"] = own
             bgf.playSfx("ShotHelicopter", buffer=True, is3D=True, refObj=own, distMax=SOUND_MAX_DISTANCE)
             
         if own["Target"] is not None and "Hostage" in own["Target"] and not own["Target"]["Free"] and globalDict["AlliesAlive"] > 0 and own["AllyCooldown"] >= 0 and not own["Landing"] and bgf.getInputStatus("KeyAlly", bge.logic.KX_INPUT_JUST_ACTIVATED):

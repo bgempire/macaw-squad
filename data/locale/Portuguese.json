@@ -41,4 +41,6 @@
     "PauseResume" : "Resumir",
     "PauseMainMenu" : "Menu Principal",
     "PauseQuitGame" : "Sair do Jogo",
+    
+    "HudLife" : "Vida: ",
 }
