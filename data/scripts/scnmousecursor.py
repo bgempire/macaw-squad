@@ -27,13 +27,14 @@ def processCursorFade(cont):
 	mouse = bge.logic.mouse
 	mPos = Vector(mouse.position)
 	mouseOffScreen = mPos.x < 0 or mPos.x > 1 or mPos.y < 0 or mPos.y > 1
-	mouseMoving = mouse.events[bge.events.MOUSEX] == 2 or mouse.events[bge.events.MOUSEY] == 2
+	mouseMoving = mouse.events[bge.events.MOUSEX] != 0 or mouse.events[bge.events.MOUSEY] != 0
 	
-	if mouseOver.positive and mouseMoving:
-		own["IdleFadeTime"] = -own["Style"]["IdleFadeTime"]
+	if mouseOver.positive:
+		if mouseMoving:
+			own["IdleFadeTime"] = -own["Style"]["IdleFadeTime"]
 		own.worldPosition = mouseOver.hitPosition
 	
-	elif own["Clicking"]:
+	if own["Clicking"]:
 		own["IdleFadeTime"] = -own["Style"]["IdleFadeTime"]
 	
 	if mouseOffScreen:
