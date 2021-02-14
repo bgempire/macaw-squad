@@ -8,4 +8,6 @@
     "TargetType" : "None",
     "CurrentEnemies" : 0,
     "Life" : 1000,
+    "Ammo" : 100,
+    "Fuel" : 100,
 }

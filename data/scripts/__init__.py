@@ -58,6 +58,9 @@ class BGForce:
         
         self.updateVideo()
     
+    def clamp(self, n, smallest, largest):
+        return max(smallest, min(n, largest))
+    
     def loadFromFile(self, path, verbose=False, msgPrefix=""):
         path = Path(path)
         try:

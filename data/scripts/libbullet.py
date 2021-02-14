@@ -20,10 +20,8 @@ def runBullet(cont):
 			if "Life" in obj and obj["Life"] > 0 and own["Emitter"] != obj:
 				obj["Life"] -= own["Damage"]
 				if "Player" in obj:
-					globalDict["Life"] = obj["Life"]
 					sound = bgf.playSfx("ShotHitMetal", buffer=True, is3D=True, refObj=obj, distMax=150)
 					if sound is not None: sound.pitch = 1 + (random() * 0.5 - 0.25)
-					own.sendMessage("UpdateText")
 				else:
 					blood = own.scene.addObject("BloodHit", own, 120)
 					blood.worldPosition = obj.worldPosition

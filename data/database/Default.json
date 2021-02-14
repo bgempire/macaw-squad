@@ -5,4 +5,5 @@
     "SplashScreenFadeSpeed" : 0.01,
     "SplashScreenWaitTime" : 1.0,
     "MaxEnemies" : 3,
+    "FuelCooldown" : 1.5,
 }

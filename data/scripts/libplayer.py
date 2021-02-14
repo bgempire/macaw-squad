@@ -29,9 +29,24 @@ def runPlayer(cont):
 
 def setProps(cont):
     own = cont.owner
+    always = cont.sensors["Always"]
     mouseOver = cont.sensors["MouseOver"]
     collision = cont.sensors["Collision"]
     
+    if always.status == bge.logic.KX_INPUT_JUST_ACTIVATED:
+        own["Life"] = globalDict["Life"]
+        own["Ammo"] = globalDict["Ammo"]
+        own["Fuel"] = globalDict["Fuel"]
+        own["FuelCooldown"] = -bgf.database["Default"]["FuelCooldown"]
+        
+    globalDict["Life"] = bgf.clamp(own["Life"], 0, bgf.database["Game"]["Life"])
+    globalDict["Fuel"] = bgf.clamp(own["Fuel"], 0, bgf.database["Game"]["Fuel"])
+    globalDict["Ammo"] = own["Ammo"] if own["Ammo"] > 0 else 0
+    
+    if own["FuelCooldown"] >= 0:
+        own["FuelCooldown"] = -bgf.database["Default"]["FuelCooldown"]
+        own["Fuel"] -= 1
+        
     own.scene["Player"] = own
     if not "Allies" in own.scene:
         own.scene["Allies"] = [own]
@@ -237,7 +252,8 @@ def processAim(cont):
         targetObj.worldPosition = mouseOverTargetArea.hitPosition
         targetObj.worldPosition.y = 0
         
-        if own["FireCooldown"] >= 0 and own.worldPosition.z > targetObj.worldPosition.z and bgf.getInputStatus("KeyFire"):
+        if own["Ammo"] > 0 and own["FireCooldown"] >= 0 and own.worldPosition.z > targetObj.worldPosition.z and bgf.getInputStatus("KeyFire"):
+            own["Ammo"] -= 1
             own["FireCooldown"] = -FIRE_COOLDOWN
             bullet = own.scene.addObject("HelicopterBullet", own, BULLET_LIFE_TIME)
             bullet.alignAxisToVect(bullet.getVectTo(targetObj.worldPosition)[1], 1)
