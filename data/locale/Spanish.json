@@ -1,0 +1,46 @@
+{
+    "GameTitle" : "Macaw Squad",
+    
+    # Common lines
+    "Yes" : "Sí",
+    "No" : "No",
+    "Confirm" : "Confirmar",
+    "Cancel" : "Cancelar",
+    "Back" : "Volver",
+    "LoadingShort" : "Cargando...",
+    "LoadingLong" : "Por favor, cargando...",
+    
+    # Main menu
+    "PlayGame" : "Jugar",
+    "Options" : "Opciones",
+    "About" : "Acerca",
+    "QuitGame" : "Salir",
+    
+    # Options menu
+    "OptionsVideo" : "Video:",
+    "OptionsVsync" : "VSync",
+    "OptionsFullscreen" : "Pantalla completa",
+    "OptionsResolution" : "Resolución:",
+    "OptionsResolutionNative" : "Nativo",
+    "OptionsSound" : "Sonido:",
+    "OptionsSfx" : "Efectos",
+    "OptionsBgm" : "Música",
+    "OptionsLanguage" : "Idioma:",
+    "OptionsEnglish" : "Inglés",
+    "OptionsPortuguese" : "Portugués",
+    
+    # About menu
+    "AboutAuthors" : "Créditos: Diego Almeida (modelado y texturas), Luciano 'Capuco' (animaciones), Joel Gomes (programación y sonido).",
+    "AboutText" : "Este juego fue creado en una semana para la game jam BGMC 34, en el Blender Artists Forum.",
+    
+    # Quit menu
+    "QuitConfirm" : "¿Estás seguro que deseás salir?",
+    
+    # Pause menu
+    "Paused" : "Pausado",
+    "PauseResume" : "Reanudar",
+    "PauseMainMenu" : "Menú principal",
+    "PauseQuitGame" : "Salir del juego",
+    
+    "HudLife" : "Vida: ",
+}
